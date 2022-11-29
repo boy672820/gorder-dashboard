@@ -31,18 +31,15 @@ import {
   TableSelectedActions,
 } from '../../components/table';
 // sections
-import {
-  ProductTableRow,
-  ProductTableToolbar,
-} from '../../sections/@dashboard/e-commerce/product-list';
+import { ProductTableRow } from '../../sections/@dashboard/e-commerce/product-list';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Product', align: 'left' },
-  { id: 'createdAt', label: 'Create at', align: 'left' },
-  { id: 'inventoryType', label: 'Status', align: 'center', width: 180 },
-  { id: 'price', label: 'Price', align: 'right' },
+  { id: 'createdAt', label: '주문시간', align: 'left' },
+  { id: 'description', label: '주문내역', align: 'left' },
+  { id: 'orderType', label: '상태', align: 'center', width: 180 },
+  { id: 'amount', label: '결제금액', align: 'right' },
   { id: '' },
 ];
 
@@ -105,23 +102,21 @@ export default function EcommerceProductList() {
   const isNotFound = (!dataFiltered.length && !!filterName) || (!isLoading && !dataFiltered.length);
 
   return (
-    <Page title="Ecommerce: Product List">
+    <Page title="지니오더: 주문대기">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Product List"
+          heading="주문대기"
           links={[
-            { name: 'Dashboard', href: '/' },
+            { name: '대시보드', href: '/' },
             {
               name: '주문대기',
               href: '/',
             },
-            { name: 'Product List' },
+            { name: '대기중인 주문 목록' },
           ]}
         />
 
         <Card>
-          <ProductTableToolbar filterName={filterName} onFilterName={handleFilterName} />
-
           <Scrollbar>
             <TableContainer sx={{ minWidth: 960, position: 'relative' }}>
               {selected.length > 0 && (
@@ -190,11 +185,13 @@ export default function EcommerceProductList() {
               page={page}
               onPageChange={onChangePage}
               onRowsPerPageChange={onChangeRowsPerPage}
+              labelRowsPerPage="페이지당 표시 수"
+              labelDisplayedRows={({ from, to, count }) => `${from}-${to} / ${count}`}
             />
 
             <FormControlLabel
               control={<Switch checked={dense} onChange={onChangeDense} />}
-              label="Dense"
+              label="작은 사이즈"
               sx={{ px: 3, py: 1.5, top: 0, position: { md: 'absolute' } }}
             />
           </Box>

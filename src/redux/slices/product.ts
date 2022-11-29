@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import sum from 'lodash/sum';
-import uniqBy from 'lodash/uniqBy';
+// import sum from 'lodash/sum';
+// import uniqBy from 'lodash/uniqBy';
 // utils
 import axios from '../../utils/axios';
 import { CartItem, Product, ProductState } from '../../@types/product';
@@ -75,40 +75,40 @@ const slice = createSlice({
 
     // CHECKOUT
     getCart(state, action) {
-      const cart = action.payload;
+      // const cart = action.payload;
 
-      const subtotal = sum(cart.map((cartItem: CartItem) => cartItem.price * cartItem.quantity));
-      const discount = cart.length === 0 ? 0 : state.checkout.discount;
-      const shipping = cart.length === 0 ? 0 : state.checkout.shipping;
-      const billing = cart.length === 0 ? null : state.checkout.billing;
+      // const subtotal = sum(cart.map((cartItem: CartItem) => cartItem.price * cartItem.quantity));
+      // const discount = cart.length === 0 ? 0 : state.checkout.discount;
+      // const shipping = cart.length === 0 ? 0 : state.checkout.shipping;
+      // const billing = cart.length === 0 ? null : state.checkout.billing;
 
-      state.checkout.cart = cart;
-      state.checkout.discount = discount;
-      state.checkout.shipping = shipping;
-      state.checkout.billing = billing;
-      state.checkout.subtotal = subtotal;
-      state.checkout.total = subtotal - discount;
+      // state.checkout.cart = cart;
+      // state.checkout.discount = discount;
+      // state.checkout.shipping = shipping;
+      // state.checkout.billing = billing;
+      // state.checkout.subtotal = subtotal;
+      // state.checkout.total = subtotal - discount;
     },
 
     addCart(state, action) {
-      const product = action.payload;
-      const isEmptyCart = state.checkout.cart.length === 0;
+      // const product = action.payload;
+      // const isEmptyCart = state.checkout.cart.length === 0;
 
-      if (isEmptyCart) {
-        state.checkout.cart = [...state.checkout.cart, product];
-      } else {
-        state.checkout.cart = state.checkout.cart.map((_product) => {
-          const isExisted = _product.id === product.id;
-          if (isExisted) {
-            return {
-              ..._product,
-              quantity: _product.quantity + 1,
-            };
-          }
-          return _product;
-        });
-      }
-      state.checkout.cart = uniqBy([...state.checkout.cart, product], 'id');
+      // if (isEmptyCart) {
+      //   state.checkout.cart = [...state.checkout.cart, product];
+      // } else {
+      //   state.checkout.cart = state.checkout.cart.map((_product) => {
+      //     const isExisted = _product.id === product.id;
+      //     if (isExisted) {
+      //       return {
+      //         ..._product,
+      //         quantity: _product.quantity + 1,
+      //       };
+      //     }
+      //     return _product;
+      //   });
+      // }
+      // state.checkout.cart = uniqBy([...state.checkout.cart, product], 'id');
     },
 
     deleteCart(state, action) {
