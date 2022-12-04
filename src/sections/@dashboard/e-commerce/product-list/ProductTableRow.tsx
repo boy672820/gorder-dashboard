@@ -4,10 +4,10 @@ import { sentenceCase } from 'change-case';
 import { useTheme } from '@mui/material/styles';
 import { TableRow, Checkbox, TableCell, Typography, MenuItem } from '@mui/material';
 // utils
-import { fDate } from '../../../../utils/formatTime';
+import { formatTime } from '../../../../utils/formatTime';
 import { fCurrency } from '../../../../utils/formatNumber';
 // @types
-import { Product } from '../../../../@types/product';
+import { Order } from '../../../../@types/order';
 // components
 import Label from '../../../../components/Label';
 import Image from '../../../../components/Image';
@@ -17,19 +17,13 @@ import { TableMoreMenu } from '../../../../components/table';
 // ----------------------------------------------------------------------
 
 type Props = {
-  row: Product;
+  row: Order;
   selected: boolean;
   onSelectRow: VoidFunction;
 };
 
-export default function ProductTableRow({
-  row,
-  selected,
-  onSelectRow,
-}: Props) {
+export default function ProductTableRow({ row, selected, onSelectRow }: Props) {
   const theme = useTheme();
-
-  const { name, cover, createdAt, inventoryType, price } = row;
 
   const [openMenu, setOpenMenuActions] = useState<HTMLElement | null>(null);
 
@@ -47,7 +41,7 @@ export default function ProductTableRow({
         <Checkbox checked={selected} onClick={onSelectRow} />
       </TableCell>
 
-      <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
+      {/* <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
         <Image
           disabledEffect
           alt={name}
@@ -57,12 +51,12 @@ export default function ProductTableRow({
         <Typography variant="subtitle2" noWrap>
           {name}
         </Typography>
-      </TableCell>
+      </TableCell> */}
 
-      <TableCell>{fDate(createdAt)}</TableCell>
+      <TableCell>{formatTime(row.createdAt)}</TableCell>
 
       <TableCell align="center">
-        <Label
+        {/* <Label
           variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
           color={
             (inventoryType === 'out_of_stock' && 'error') ||
@@ -72,10 +66,10 @@ export default function ProductTableRow({
           sx={{ textTransform: 'capitalize' }}
         >
           {inventoryType ? sentenceCase(inventoryType) : ''}
-        </Label>
+        </Label> */}
       </TableCell>
 
-      <TableCell align="right">{fCurrency(price)}</TableCell>
+      <TableCell align="right">{fCurrency(row.amount)}</TableCell>
 
       <TableCell align="right">
         <TableMoreMenu

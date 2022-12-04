@@ -6,7 +6,7 @@ import { SettingsValueProps } from './components/settings/type';
 // LAYOUT
 // ----------------------------------------------------------------------
 
-export const HOST_API = process.env.REACT_APP_HOST_API_KEY || '';
+export const HOST_API = process.env.REACT_APP_HOST_API || '';
 
 export const HEADER = {
   MOBILE_HEIGHT: 64,

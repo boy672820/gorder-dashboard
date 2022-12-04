@@ -2,6 +2,12 @@ import { format, getTime, formatDistanceToNow } from 'date-fns';
 
 // ----------------------------------------------------------------------
 
+export function formatTime(date: Date | string | number) {
+  return format(new Date(date), 'hh:mm');
+}
+
+// ----------------------------------------------------------------------
+
 export function fDate(date: Date | string | number) {
   return format(new Date(date), 'dd MMMM yyyy');
 }
@@ -20,6 +26,6 @@ export function fDateTimeSuffix(date: Date | string | number) {
 
 export function fToNow(date: Date | string | number) {
   return formatDistanceToNow(new Date(date), {
-    addSuffix: true
+    addSuffix: true,
   });
 }

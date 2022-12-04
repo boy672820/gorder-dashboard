@@ -13,12 +13,12 @@ import {
 } from '@mui/material';
 // redux
 import { useDispatch, useSelector } from '../../redux/store';
-import { getProducts } from '../../redux/slices/product';
+import { getOrders } from '../../redux/slices/order';
 // hooks
 import useSettings from '../../hooks/useSettings';
 import useTable, { getComparator, emptyRows } from '../../hooks/useTable';
 // @types
-import { Product } from '../../@types/product';
+import { Order } from '../../@types/order';
 // components
 import Page from '../../components/Page';
 import Scrollbar from '../../components/Scrollbar';
@@ -45,14 +45,14 @@ const TABLE_HEAD = [
 
 // ----------------------------------------------------------------------
 
-export default function EcommerceProductList() {
+export default function OrderWaitingList() {
   const {
     dense,
     page,
     order,
     orderBy,
     rowsPerPage,
-    setPage,
+    // setPage,
     //
     selected,
     onSelectRow,
@@ -70,36 +70,41 @@ export default function EcommerceProductList() {
 
   const dispatch = useDispatch();
 
-  const { products, isLoading } = useSelector((state) => state.product);
+  const { orders, isLoading } = useSelector((state) => state.order);
 
-  const [tableData, setTableData] = useState<Product[]>([]);
+  const [tableData, setTableData] = useState<Order[]>([]);
 
-  const [filterName, setFilterName] = useState('');
+  // const [filterName, setFilterName] = useState('');
 
   useEffect(() => {
-    dispatch(getProducts());
+    dispatch(getOrders());
   }, [dispatch]);
 
   useEffect(() => {
-    if (products.length) {
-      setTableData(products);
+    if (orders.length) {
+      setTableData(orders);
     }
-  }, [products]);
+  }, [orders]);
 
-  const handleFilterName = (filterName: string) => {
-    setFilterName(filterName);
-    setPage(0);
-  };
+  // const handleFilterName = (filterName: string) => {
+  //   setFilterName(filterName);
+  //   setPage(0);
+  // };
 
+  // const dataFiltered = applySortFilter({
+  //   tableData,
+  //   comparator: getComparator(order, orderBy),
+  //   filterName,
+  // });
   const dataFiltered = applySortFilter({
     tableData,
     comparator: getComparator(order, orderBy),
-    filterName,
   });
 
   const denseHeight = dense ? 60 : 80;
 
-  const isNotFound = (!dataFiltered.length && !!filterName) || (!isLoading && !dataFiltered.length);
+  // const isNotFound = (!dataFiltered.length && !!filterName) || (!isLoading && !dataFiltered.length);
+  const isNotFound = !isLoading && !dataFiltered.length;
 
   return (
     <Page title="지니오더: 주문대기">
@@ -127,7 +132,7 @@ export default function EcommerceProductList() {
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      tableData.map((row) => row.id)
+                      tableData.map((row) => row.orderId)
                     )
                   }
                 />
@@ -144,21 +149,21 @@ export default function EcommerceProductList() {
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      tableData.map((row) => row.id)
+                      tableData.map((row) => row.orderId)
                     )
                   }
                 />
 
                 <TableBody>
-                  {(isLoading ? [...Array(rowsPerPage)] : dataFiltered)
+                  {(isLoading ? [...(Array(rowsPerPage) as Order[])] : dataFiltered)
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) =>
                       row ? (
                         <ProductTableRow
-                          key={row.id}
+                          key={row.orderId}
                           row={row}
-                          selected={selected.includes(row.id)}
-                          onSelectRow={() => onSelectRow(row.id)}
+                          selected={selected.includes(row.orderId)}
+                          onSelectRow={() => onSelectRow(row.orderId)}
                         />
                       ) : (
                         !isNotFound && <TableSkeleton key={index} sx={{ height: denseHeight }} />
@@ -206,11 +211,9 @@ export default function EcommerceProductList() {
 function applySortFilter({
   tableData,
   comparator,
-  filterName,
 }: {
-  tableData: Product[];
+  tableData: Order[];
   comparator: (a: any, b: any) => number;
-  filterName: string;
 }) {
   const stabilizedThis = tableData.map((el, index) => [el, index] as const);
 
@@ -222,12 +225,12 @@ function applySortFilter({
 
   tableData = stabilizedThis.map((el) => el[0]);
 
-  if (filterName) {
-    tableData = tableData.filter(
-      (item: Record<string, any>) =>
-        item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
-    );
-  }
+  // if (filterName) {
+  //   tableData = tableData.filter(
+  //     (item: Record<string, any>) =>
+  //       item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+  //   );
+  // }
 
   return tableData;
 }
