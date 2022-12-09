@@ -16,6 +16,7 @@ export type OrderProduct = {
   basePrice: number;
   discount: number;
   totalPrice: number;
+  quantity: number;
 };
 
 export type Order = {
@@ -27,7 +28,8 @@ export type Order = {
   user: {
     email: string;
   };
-  orderHasProducts: Array<{ product: OrderProduct }>;
+  orderHasProducts: Array<OrderProduct>;
+  _count: { orderHasProducts: number };
 };
 
 export type OrderState = {

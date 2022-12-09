@@ -36,11 +36,9 @@ import { ProductTableRow } from '../../sections/@dashboard/e-commerce/product-li
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'createdAt', label: '주문시간', align: 'left' },
-  { id: 'description', label: '주문내역', align: 'left' },
-  { id: 'orderType', label: '상태', align: 'center', width: 180 },
-  { id: 'amount', label: '결제금액', align: 'right' },
-  { id: '' },
+  { id: 'createdAt', label: '주문시간', align: 'center', width: 110 },
+  { id: 'description', label: '주문내역', align: 'center' },
+  { id: '', width: 260 },
 ];
 
 // ----------------------------------------------------------------------
@@ -107,7 +105,7 @@ export default function OrderWaitingList() {
   const isNotFound = !isLoading && !dataFiltered.length;
 
   return (
-    <Page title="지니오더: 주문대기">
+    <Page title="주문대기">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
           heading="주문대기"
@@ -160,7 +158,7 @@ export default function OrderWaitingList() {
                     .map((row, index) =>
                       row ? (
                         <ProductTableRow
-                          key={row.orderId}
+                          key={index}
                           row={row}
                           selected={selected.includes(row.orderId)}
                           onSelectRow={() => onSelectRow(row.orderId)}

@@ -1,18 +1,51 @@
-import { useState } from 'react';
-import { sentenceCase } from 'change-case';
-// @mui
-import { useTheme } from '@mui/material/styles';
-import { TableRow, Checkbox, TableCell, Typography, MenuItem } from '@mui/material';
+import {
+  TableRow,
+  Checkbox,
+  TableCell,
+  Typography,
+  Button,
+  Box,
+  useTheme,
+  useMediaQuery,
+} from '@mui/material';
 // utils
 import { formatTime } from '../../../../utils/formatTime';
 import { fCurrency } from '../../../../utils/formatNumber';
 // @types
 import { Order } from '../../../../@types/order';
-// components
-import Label from '../../../../components/Label';
-import Image from '../../../../components/Image';
-import Iconify from '../../../../components/Iconify';
-import { TableMoreMenu } from '../../../../components/table';
+import React from 'react';
+
+// ----------------------------------------------------------------------
+
+const serializeMenu = (products: Order['orderHasProducts']) => {
+  let key = 0;
+
+  const result = products.reduce((acc, product, index) => {
+    acc.push(
+      <React.Fragment key={key}>
+        &nbsp;/&nbsp;
+        {product.name}
+        <Typography variant="body2" sx={{ color: 'text.secondary' }} component="span">
+          (+{product.quantity})
+        </Typography>
+      </React.Fragment>
+    );
+    key += 1;
+
+    return acc;
+  }, [] as any);
+
+  result[0] = (
+    <React.Fragment key={0}>
+      {products[0].name}
+      <Typography variant="body2" sx={{ color: 'text.secondary' }} component="span">
+        (+{products[0].quantity})
+      </Typography>
+    </React.Fragment>
+  );
+
+  return result;
+};
 
 // ----------------------------------------------------------------------
 
@@ -24,16 +57,7 @@ type Props = {
 
 export default function ProductTableRow({ row, selected, onSelectRow }: Props) {
   const theme = useTheme();
-
-  const [openMenu, setOpenMenuActions] = useState<HTMLElement | null>(null);
-
-  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setOpenMenuActions(event.currentTarget);
-  };
-
-  const handleCloseMenu = () => {
-    setOpenMenuActions(null);
-  };
+  const matchesBySm = useMediaQuery(theme.breakpoints.up('sm'));
 
   return (
     <TableRow hover selected={selected}>
@@ -41,63 +65,34 @@ export default function ProductTableRow({ row, selected, onSelectRow }: Props) {
         <Checkbox checked={selected} onClick={onSelectRow} />
       </TableCell>
 
-      {/* <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-        <Image
-          disabledEffect
-          alt={name}
-          src={cover}
-          sx={{ borderRadius: 1.5, width: 48, height: 48, mr: 2 }}
-        />
-        <Typography variant="subtitle2" noWrap>
-          {name}
-        </Typography>
-      </TableCell> */}
-
-      <TableCell>{formatTime(row.createdAt)}</TableCell>
-
-      <TableCell align="center">
-        {/* <Label
-          variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-          color={
-            (inventoryType === 'out_of_stock' && 'error') ||
-            (inventoryType === 'low_stock' && 'warning') ||
-            'success'
-          }
-          sx={{ textTransform: 'capitalize' }}
-        >
-          {inventoryType ? sentenceCase(inventoryType) : ''}
-        </Label> */}
+      <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+        {formatTime(row.createdAt)}
       </TableCell>
 
-      <TableCell align="right">{fCurrency(row.amount)}</TableCell>
+      <TableCell align="left">
+        <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+          [메뉴 {row._count.orderHasProducts}개] {fCurrency(row.amount)}원
+        </Typography>
+        <Typography
+          variant="body2"
+          sx={{
+            width: theme.breakpoints.values.sm,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {serializeMenu(row.orderHasProducts)}
+        </Typography>
+      </TableCell>
 
       <TableCell align="right">
-        <TableMoreMenu
-          open={openMenu}
-          onOpen={handleOpenMenu}
-          onClose={handleCloseMenu}
-          actions={
-            <>
-              <MenuItem
-                onClick={() => {
-                  handleCloseMenu();
-                }}
-                sx={{ color: 'error.main' }}
-              >
-                <Iconify icon={'eva:trash-2-outline'} />
-                Delete
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  handleCloseMenu();
-                }}
-              >
-                <Iconify icon={'eva:edit-fill'} />
-                Edit
-              </MenuItem>
-            </>
-          }
-        />
+        <Button type="button" variant="outlined" color="secondary" size="large" sx={{ mr: 1 }}>
+          주문표 확인
+        </Button>
+        <Button type="button" variant="contained" color="primary" size="large">
+          접수하기
+        </Button>
       </TableCell>
     </TableRow>
   );
