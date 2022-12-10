@@ -5,6 +5,7 @@ import { List, Box, ListSubheader } from '@mui/material';
 import { NavSectionProps } from '../type';
 //
 import { NavListRoot } from './NavList';
+import { useSelector } from '../../../redux/store';
 
 // ----------------------------------------------------------------------
 
@@ -28,6 +29,15 @@ export default function NavSectionVertical({
   isCollapse = false,
   ...other
 }: NavSectionProps) {
+  const { pendingOrderTotalCount, confirmedOrderTotalCount, completedOrderTotalCount } =
+    useSelector((state) => state.order);
+
+  const navItemMeta = {
+    waiting: { count: pendingOrderTotalCount },
+    processing: { count: confirmedOrderTotalCount },
+    completed: { count: completedOrderTotalCount },
+  };
+
   return (
     <Box {...other}>
       {navConfig.map((group) => (
@@ -43,7 +53,12 @@ export default function NavSectionVertical({
           </ListSubheaderStyle>
 
           {group.items.map((list) => (
-            <NavListRoot key={list.title + list.path} list={list} isCollapse={isCollapse} />
+            <NavListRoot
+              key={list.title + list.path}
+              list={list}
+              isCollapse={isCollapse}
+              navItemMeta={navItemMeta}
+            />
           ))}
         </List>
       ))}

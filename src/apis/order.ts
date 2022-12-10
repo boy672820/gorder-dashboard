@@ -1,12 +1,12 @@
 import axiosInstance from '../utils/axios';
-import { Order, OrderType } from '../@types/order';
+import { OrderList, OrderType } from '../@types/order';
 
 const orderUrl = (path?: string) => `/order${path || ''}`;
 
 export class OrderApi {
-  static async getOrders(): Promise<Order[]> {
+  static async getOrders(): Promise<OrderList> {
     const params = { type: OrderType.Order, orderBy: 'asc' };
-    const response = await axiosInstance.get<Order[]>(orderUrl(), { params });
+    const response = await axiosInstance.get<OrderList>(orderUrl(), { params });
 
     return response.data;
   }

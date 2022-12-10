@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 // @mui
 import { List, Collapse } from '@mui/material';
 // type
-import { NavListProps } from '../type';
+import { NavItemMeta, NavListProps } from '../type';
 //
 import { NavItemRoot, NavItemSub } from './NavItem';
 import { getActive } from '..';
@@ -13,9 +13,10 @@ import { getActive } from '..';
 type NavListRootProps = {
   list: NavListProps;
   isCollapse: boolean;
+  navItemMeta?: NavItemMeta;
 };
 
-export function NavListRoot({ list, isCollapse }: NavListRootProps) {
+export function NavListRoot({ list, isCollapse, navItemMeta }: NavListRootProps) {
   const { pathname } = useLocation();
 
   const active = getActive(list.path, pathname);
@@ -33,6 +34,7 @@ export function NavListRoot({ list, isCollapse }: NavListRootProps) {
           active={active}
           open={open}
           onOpen={() => setOpen(!open)}
+          navItemMeta={navItemMeta}
         />
 
         {!isCollapse && (
@@ -48,7 +50,9 @@ export function NavListRoot({ list, isCollapse }: NavListRootProps) {
     );
   }
 
-  return <NavItemRoot item={list} active={active} isCollapse={isCollapse} />;
+  return (
+    <NavItemRoot item={list} active={active} isCollapse={isCollapse} navItemMeta={navItemMeta} />
+  );
 }
 
 // ----------------------------------------------------------------------

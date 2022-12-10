@@ -1,13 +1,4 @@
-import {
-  TableRow,
-  Checkbox,
-  TableCell,
-  Typography,
-  Button,
-  Box,
-  useTheme,
-  useMediaQuery,
-} from '@mui/material';
+import { TableRow, Checkbox, TableCell, Typography, Button } from '@mui/material';
 // utils
 import { formatTime } from '../../../../utils/formatTime';
 import { fCurrency } from '../../../../utils/formatNumber';
@@ -56,9 +47,8 @@ type Props = {
 };
 
 export default function ProductTableRow({ row, selected, onSelectRow }: Props) {
-  const theme = useTheme();
-  const matchesBySm = useMediaQuery(theme.breakpoints.up('sm'));
-
+  const handleConfirm = (orderId: Order['orderId']) => {};
+  
   return (
     <TableRow hover selected={selected}>
       <TableCell padding="checkbox">
@@ -69,14 +59,13 @@ export default function ProductTableRow({ row, selected, onSelectRow }: Props) {
         {formatTime(row.createdAt)}
       </TableCell>
 
-      <TableCell align="left">
+      <TableCell align="left" sx={{ maxWidth: 0 }}>
         <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
           [메뉴 {row._count.orderHasProducts}개] {fCurrency(row.amount)}원
         </Typography>
         <Typography
           variant="body2"
           sx={{
-            width: theme.breakpoints.values.sm,
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
@@ -90,7 +79,7 @@ export default function ProductTableRow({ row, selected, onSelectRow }: Props) {
         <Button type="button" variant="outlined" color="secondary" size="large" sx={{ mr: 1 }}>
           주문표 확인
         </Button>
-        <Button type="button" variant="contained" color="primary" size="large">
+        <Button type="button" variant="contained" color="primary" size="large" onClick={() => handleConfirm(row.orderId)}>
           접수하기
         </Button>
       </TableCell>

@@ -32,8 +32,21 @@ export type Order = {
   _count: { orderHasProducts: number };
 };
 
+export type OrderList = {
+  pendingOrders: Order[];
+  confirmedOrders: Order[];
+  deliveringOrders: Order[];
+  completedOrders: Order[];
+  cancelledOrders: Order[];
+};
+
 export type OrderState = {
-  orders: Order[];
+  pendingOrderTotalCount: number;
+  confirmedOrderTotalCount: number;
+  deliveringOrderTotalCount: number;
+  completedOrderTotalCount: number;
+  cancelledOrderTotalCount: number;
+  //
   isLoading: boolean;
   error: string | null;
-};
+} & OrderList;

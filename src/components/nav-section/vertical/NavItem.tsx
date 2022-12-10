@@ -10,8 +10,15 @@ import { isExternalLink } from '..';
 
 // ----------------------------------------------------------------------
 
-export function NavItemRoot({ item, isCollapse, open = false, active, onOpen }: NavItemProps) {
-  const { title, path, icon, info, children, disabled, caption, roles } = item;
+export function NavItemRoot({
+  item,
+  isCollapse,
+  open = false,
+  active,
+  onOpen,
+  navItemMeta,
+}: NavItemProps) {
+  const { title, path, icon, info, children, disabled, caption, roles, id } = item;
 
   const renderContent = (
     <>
@@ -27,7 +34,7 @@ export function NavItemRoot({ item, isCollapse, open = false, active, onOpen }: 
               component="div"
               sx={{ textTransform: 'initial', color: 'text.secondary' }}
             >
-              {caption}
+              {caption} {navItemMeta && id ? navItemMeta[id].count || '' : ''}
             </Typography>
           </Tooltip>
         }

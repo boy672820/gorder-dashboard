@@ -68,7 +68,11 @@ export default function OrderWaitingList() {
 
   const dispatch = useDispatch();
 
-  const { orders, isLoading } = useSelector((state) => state.order);
+  const {
+    pendingOrders: orders,
+    pendingOrderTotalCount: orderTotalCount,
+    isLoading,
+  } = useSelector((state) => state.order);
 
   const [tableData, setTableData] = useState<Order[]>([]);
 
@@ -104,18 +108,20 @@ export default function OrderWaitingList() {
   // const isNotFound = (!dataFiltered.length && !!filterName) || (!isLoading && !dataFiltered.length);
   const isNotFound = !isLoading && !dataFiltered.length;
 
+  const heading = `주문대기(${orderTotalCount})`;
+
   return (
-    <Page title="주문대기">
+    <Page title={heading}>
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="주문대기"
+          heading={heading}
           links={[
             { name: '대시보드', href: '/' },
             {
-              name: '주문대기',
+              name: '주문관리',
               href: '/',
             },
-            { name: '대기중인 주문 목록' },
+            { name: heading },
           ]}
         />
 

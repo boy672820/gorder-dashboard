@@ -18,7 +18,7 @@ import { NavSectionVertical } from '../../../components/nav-section';
 import navConfig from './NavConfig';
 // import NavbarDocs from './NavbarDocs';
 // import NavbarAccount from './NavbarAccount';
-import CollapseButton from './CollapseButton';
+// import CollapseButton from './CollapseButton';
 
 // ----------------------------------------------------------------------
 
@@ -45,7 +45,7 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }: Props)
 
   const isDesktop = useResponsive('up', 'lg');
 
-  const { isCollapse, collapseClick, collapseHover, onToggleCollapse, onHoverEnter, onHoverLeave } =
+  const { isCollapse, collapseClick, collapseHover, onHoverEnter, onHoverLeave } =
     useCollapseDrawer();
 
   useEffect(() => {
@@ -75,9 +75,9 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }: Props)
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           <Logo />
 
-          {isDesktop && !isCollapse && (
+          {/* {isDesktop && !isCollapse && (
             <CollapseButton onToggleCollapse={onToggleCollapse} collapseClick={collapseClick} />
-          )}
+          )} */}
         </Stack>
 
         {/* <NavbarAccount isCollapse={isCollapse} /> */}

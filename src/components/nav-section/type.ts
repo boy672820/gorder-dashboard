@@ -3,9 +3,14 @@ import { BoxProps } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
+export type NavItemMeta = {
+  [key in string]: { count: number };
+};
+
 export type NavListProps = {
   title: string;
   path: string;
+  id?: string;
   icon?: ReactElement;
   info?: ReactElement;
   caption?: string;
@@ -20,6 +25,7 @@ export type NavListProps = {
 
 export type NavItemProps = {
   item: NavListProps;
+  navItemMeta?: NavItemMeta;
   isCollapse?: boolean;
   active?: boolean | undefined;
   open?: boolean;
