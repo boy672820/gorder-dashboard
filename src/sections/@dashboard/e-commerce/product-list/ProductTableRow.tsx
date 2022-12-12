@@ -1,10 +1,10 @@
-import { TableRow, Checkbox, TableCell, Typography, Button } from '@mui/material';
+import { TableRow, Checkbox, TableCell, Typography, Button, Grid } from '@mui/material';
 // utils
 import { formatTime } from '../../../../utils/formatTime';
 import { fCurrency } from '../../../../utils/formatNumber';
 // @types
 import { Order } from '../../../../@types/order';
-import React from 'react';
+import React, { useCallback } from 'react';
 
 // ----------------------------------------------------------------------
 
@@ -41,14 +41,25 @@ const serializeMenu = (products: Order['orderHasProducts']) => {
 // ----------------------------------------------------------------------
 
 type Props = {
+  index: number;
   row: Order;
   selected: boolean;
   onSelectRow: VoidFunction;
+  onConfirm: (orderId: Order['orderId'], index: number) => Promise<void> | void;
 };
 
-export default function ProductTableRow({ row, selected, onSelectRow }: Props) {
-  const handleConfirm = (orderId: Order['orderId']) => {};
-  
+export default function ProductTableRow({ index, row, selected, onSelectRow, onConfirm }: Props) {
+  const [confirmed, setConfirmed] = React.useState<boolean>(false);
+
+  const handleConfirm = useCallback(
+    async (orderId: Order['orderId'], index: number) => {
+      await onConfirm(orderId, index);
+
+      setConfirmed(true);
+    },
+    [onConfirm]
+  );
+
   return (
     <TableRow hover selected={selected}>
       <TableCell padding="checkbox">
@@ -76,12 +87,26 @@ export default function ProductTableRow({ row, selected, onSelectRow }: Props) {
       </TableCell>
 
       <TableCell align="right">
-        <Button type="button" variant="outlined" color="secondary" size="large" sx={{ mr: 1 }}>
-          주문표 확인
-        </Button>
-        <Button type="button" variant="contained" color="primary" size="large" onClick={() => handleConfirm(row.orderId)}>
-          접수하기
-        </Button>
+        <Grid container spacing={1}>
+          <Grid item xs={6}>
+            <Button type="button" variant="outlined" color="secondary" size="large" fullWidth>
+              주문표
+            </Button>
+          </Grid>
+          <Grid item xs={6}>
+            <Button
+              type="button"
+              variant="contained"
+              color="primary"
+              size="large"
+              disabled={confirmed}
+              onClick={() => handleConfirm(row.orderId, index)}
+              fullWidth
+            >
+              {confirmed ? '조리 중' : '접수하기'}
+            </Button>
+          </Grid>
+        </Grid>
       </TableCell>
     </TableRow>
   );

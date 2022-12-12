@@ -28,14 +28,24 @@ export function NavItemRoot({
         primary={title}
         secondary={
           <Tooltip title={caption || ''} arrow>
-            <Typography
-              noWrap
-              variant="caption"
-              component="div"
-              sx={{ textTransform: 'initial', color: 'text.secondary' }}
-            >
-              {caption} {navItemMeta && id ? navItemMeta[id].count || '' : ''}
-            </Typography>
+            <>
+              <Typography
+                noWrap
+                variant="caption"
+                component="div"
+                sx={{ textTransform: 'initial', color: 'text.secondary', textAlign: 'center' }}
+              >
+                {caption}
+              </Typography>
+              <Typography
+                noWrap
+                variant="caption"
+                component="div"
+                sx={{ textTransform: 'initial', color: 'text.secondary', textAlign: 'center' }}
+              >
+                {navItemMeta && id ? navItemMeta[id].count || '' : ''}
+              </Typography>
+            </>
           </Tooltip>
         }
         isCollapse={isCollapse}

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { OrderState } from '../../@types/order';
+import { Order, OrderState } from '../../@types/order';
 import { dispatch } from '../store';
 import { OrderApi } from '../../apis/order';
 
@@ -35,6 +35,9 @@ const slice = createSlice({
 
     //
 
+    /**
+     * 주문내역 전체 가져오기
+     */
     getAllOrders(state, action) {
       state.isLoading = false;
 
@@ -50,6 +53,18 @@ const slice = createSlice({
       state.completedOrderTotalCount = action.payload.completedOrders.length;
       state.cancelledOrderTotalCount = action.payload.cancelledOrders.length;
     },
+
+    confirmOrder(state, action) {
+      state.isLoading = false;
+
+      const index = action.payload;
+      const confirmedOrder = state.pendingOrders[index];
+
+      // 주문대기 목록의 총 개수 감소
+      state.pendingOrderTotalCount -= 1;
+      // 주문확인 목록의 맨 앞으로 이동, 총 개수 증가
+      state.confirmedOrderTotalCount = state.confirmedOrders.unshift(confirmedOrder);
+    },
   },
 });
 
@@ -62,6 +77,16 @@ export const getOrders = () => async () => {
     const data = await OrderApi.getOrders();
 
     dispatch(slice.actions.getAllOrders(data));
+  } catch (e) {
+    dispatch(slice.actions.hasError(e.message));
+  }
+};
+
+export const confirmOrder = (orderId: Order['orderId'], index: number) => async () => {
+  dispatch(slice.actions.startLoading());
+
+  try {
+    dispatch(slice.actions.confirmOrder(index));
   } catch (e) {
     dispatch(slice.actions.hasError(e.message));
   }

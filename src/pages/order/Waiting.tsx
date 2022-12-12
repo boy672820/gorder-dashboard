@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 // redux
 import { useDispatch, useSelector } from '../../redux/store';
-import { getOrders } from '../../redux/slices/order';
+import { confirmOrder, getOrders } from '../../redux/slices/order';
 // hooks
 import useSettings from '../../hooks/useSettings';
 import useTable, { getComparator, emptyRows } from '../../hooks/useTable';
@@ -88,6 +88,10 @@ export default function OrderWaitingList() {
     }
   }, [orders]);
 
+  const handleConfirm = (orderId: Order['orderId'], index: number) => {
+    dispatch(confirmOrder(orderId, index));
+  };
+
   // const handleFilterName = (filterName: string) => {
   //   setFilterName(filterName);
   //   setPage(0);
@@ -98,6 +102,7 @@ export default function OrderWaitingList() {
   //   comparator: getComparator(order, orderBy),
   //   filterName,
   // });
+
   const dataFiltered = applySortFilter({
     tableData,
     comparator: getComparator(order, orderBy),
@@ -108,7 +113,7 @@ export default function OrderWaitingList() {
   // const isNotFound = (!dataFiltered.length && !!filterName) || (!isLoading && !dataFiltered.length);
   const isNotFound = !isLoading && !dataFiltered.length;
 
-  const heading = `주문대기(${orderTotalCount})`;
+  const heading = `주문대기${orderTotalCount ? `(${orderTotalCount})` : ''}`;
 
   return (
     <Page title={heading}>
@@ -165,9 +170,11 @@ export default function OrderWaitingList() {
                       row ? (
                         <ProductTableRow
                           key={index}
+                          index={index}
                           row={row}
                           selected={selected.includes(row.orderId)}
                           onSelectRow={() => onSelectRow(row.orderId)}
+                          onConfirm={handleConfirm}
                         />
                       ) : (
                         !isNotFound && <TableSkeleton key={index} sx={{ height: denseHeight }} />
