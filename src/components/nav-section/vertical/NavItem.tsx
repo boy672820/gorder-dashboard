@@ -1,7 +1,7 @@
 import { NavLink as RouterLink } from 'react-router-dom';
 // @mui
 // import { Box, Link, ListItemText, Typography, Tooltip } from '@mui/material';
-import { Link, ListItemText, Typography, Tooltip, Badge, Box } from '@mui/material';
+import { Link, ListItemText, Typography, Tooltip, Box } from '@mui/material';
 // type
 import { NavItemProps } from '../type';
 //
@@ -9,6 +9,7 @@ import Iconify from '../../Iconify';
 // import { ListItemStyle as ListItem, ListItemTextStyle, ListItemIconStyle } from './style';
 import { ListItemStyle as ListItem, ListItemTextStyle } from './style';
 import { isExternalLink } from '..';
+import Label from '../../Label';
 
 // ----------------------------------------------------------------------
 
@@ -29,11 +30,12 @@ export function NavItemRoot({
         disableTypography
         primary={
           navItemMeta && id && navItemMeta[id].count ? (
-            <Badge
-              badgeContent={navItemMeta[id].count}
-              color="error"
-              children={<Box sx={{ pl: 0.6, pr: 0.6 }}>{title}</Box>}
-            />
+            <Box display="flex" flexDirection="row" gap={0.3}>
+              <Box>{title}</Box>
+              <Label variant="filled" color="error" sx={{ borderRadius: '50%' }}>
+                {navItemMeta[id].count}
+              </Label>
+            </Box>
           ) : (
             title
           )

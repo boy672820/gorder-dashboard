@@ -38,7 +38,7 @@ import { ProductTableRow } from '../../sections/@dashboard/e-commerce/product-li
 const TABLE_HEAD = [
   { id: 'createdAt', label: '주문시간', align: 'center', width: 110 },
   { id: 'description', label: '주문내역', align: 'center' },
-  { id: '', width: 260 },
+  { id: '', width: 250 },
 ];
 
 // ----------------------------------------------------------------------
@@ -132,7 +132,7 @@ export default function OrderWaitingList() {
 
         <Card>
           <Scrollbar>
-            <TableContainer sx={{ minWidth: 960, position: 'relative' }}>
+            <TableContainer sx={{ minWidth: 760, position: 'relative' }}>
               {selected.length > 0 && (
                 <TableSelectedActions
                   dense={dense}
