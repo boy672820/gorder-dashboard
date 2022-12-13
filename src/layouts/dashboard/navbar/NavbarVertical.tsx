@@ -72,7 +72,7 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }: Props)
           ...(isCollapse && { alignItems: 'center' }),
         }}
       >
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Stack direction="row" alignItems="center" justifyContent="center">
           <Logo />
 
           {/* {isDesktop && !isCollapse && (

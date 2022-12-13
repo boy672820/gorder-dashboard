@@ -1,11 +1,13 @@
 import { NavLink as RouterLink } from 'react-router-dom';
 // @mui
-import { Box, Link, ListItemText, Typography, Tooltip } from '@mui/material';
+// import { Box, Link, ListItemText, Typography, Tooltip } from '@mui/material';
+import { Link, ListItemText, Typography, Tooltip, Badge, Box } from '@mui/material';
 // type
 import { NavItemProps } from '../type';
 //
 import Iconify from '../../Iconify';
-import { ListItemStyle as ListItem, ListItemTextStyle, ListItemIconStyle } from './style';
+// import { ListItemStyle as ListItem, ListItemTextStyle, ListItemIconStyle } from './style';
+import { ListItemStyle as ListItem, ListItemTextStyle } from './style';
 import { isExternalLink } from '..';
 
 // ----------------------------------------------------------------------
@@ -18,34 +20,34 @@ export function NavItemRoot({
   onOpen,
   navItemMeta,
 }: NavItemProps) {
-  const { title, path, icon, info, children, disabled, caption, roles, id } = item;
+  const { title, path, info, children, disabled, caption, roles, id } = item;
 
   const renderContent = (
     <>
-      {icon && <ListItemIconStyle>{icon}</ListItemIconStyle>}
+      {/* {icon && <ListItemIconStyle>{icon}</ListItemIconStyle>} */}
       <ListItemTextStyle
         disableTypography
-        primary={title}
+        primary={
+          navItemMeta && id && navItemMeta[id].count ? (
+            <Badge
+              badgeContent={navItemMeta[id].count}
+              color="error"
+              children={<Box sx={{ pl: 0.6, pr: 0.6 }}>{title}</Box>}
+            />
+          ) : (
+            title
+          )
+        }
         secondary={
           <Tooltip title={caption || ''} arrow>
-            <>
-              <Typography
-                noWrap
-                variant="caption"
-                component="div"
-                sx={{ textTransform: 'initial', color: 'text.secondary', textAlign: 'center' }}
-              >
-                {caption}
-              </Typography>
-              <Typography
-                noWrap
-                variant="caption"
-                component="div"
-                sx={{ textTransform: 'initial', color: 'text.secondary', textAlign: 'center' }}
-              >
-                {navItemMeta && id ? navItemMeta[id].count || '' : ''}
-              </Typography>
-            </>
+            <Typography
+              noWrap
+              variant="caption"
+              component="div"
+              sx={{ textTransform: 'initial', color: 'text.secondary' }}
+            >
+              {caption}
+            </Typography>
           </Tooltip>
         }
         isCollapse={isCollapse}
@@ -100,7 +102,7 @@ export function NavItemSub({ item, open = false, active = false, onOpen }: NavIt
 
   const renderContent = (
     <>
-      <DotIcon active={active} />
+      {/* <DotIcon active={active} /> */}
       <ListItemText
         disableTypography
         primary={title}
@@ -158,33 +160,33 @@ export function NavItemSub({ item, open = false, active = false, onOpen }: NavIt
 
 // ----------------------------------------------------------------------
 
-type DotIconProps = {
-  active: boolean;
-};
+// type DotIconProps = {
+//   active: boolean;
+// };
 
-export function DotIcon({ active }: DotIconProps) {
-  return (
-    <ListItemIconStyle>
-      <Box
-        component="span"
-        sx={{
-          width: 4,
-          height: 4,
-          borderRadius: '50%',
-          bgcolor: 'text.disabled',
-          transition: (theme) =>
-            theme.transitions.create('transform', {
-              duration: theme.transitions.duration.shorter,
-            }),
-          ...(active && {
-            transform: 'scale(2)',
-            bgcolor: 'primary.main',
-          }),
-        }}
-      />
-    </ListItemIconStyle>
-  );
-}
+// export function DotIcon({ active }: DotIconProps) {
+//   return (
+//     <ListItemIconStyle>
+//       <Box
+//         component="span"
+//         sx={{
+//           width: 4,
+//           height: 4,
+//           borderRadius: '50%',
+//           bgcolor: 'text.disabled',
+//           transition: (theme) =>
+//             theme.transitions.create('transform', {
+//               duration: theme.transitions.duration.shorter,
+//             }),
+//           ...(active && {
+//             transform: 'scale(2)',
+//             bgcolor: 'primary.main',
+//           }),
+//         }}
+//       />
+//     </ListItemIconStyle>
+//   );
+// }
 
 // ----------------------------------------------------------------------
 

@@ -31,8 +31,8 @@ export const ListItemStyle = styled(ListItemButton, {
   position: 'relative',
   height: NAVBAR.DASHBOARD_ITEM_ROOT_HEIGHT,
   textTransform: 'capitalize',
-  paddingLeft: theme.spacing(2),
-  paddingRight: theme.spacing(1.5),
+  // paddingLeft: theme.spacing(1.5),
+  // paddingRight: theme.spacing(1.5),
   marginBottom: theme.spacing(0.5),
   color: theme.palette.text.secondary,
   borderRadius: theme.shape.borderRadius,
@@ -60,6 +60,7 @@ interface ListItemTextStyleProps extends ListItemButtonProps {
 export const ListItemTextStyle = styled(ListItemText, {
   shouldForwardProp: (prop) => prop !== 'isCollapse',
 })<ListItemTextStyleProps>(({ isCollapse, theme }) => ({
+  textAlign: 'center',
   whiteSpace: 'nowrap',
   transition: theme.transitions.create(['width', 'opacity'], {
     duration: theme.transitions.duration.shorter,
