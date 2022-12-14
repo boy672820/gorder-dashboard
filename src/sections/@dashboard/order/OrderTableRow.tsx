@@ -1,9 +1,9 @@
 import { TableRow, Checkbox, TableCell, Typography, Button, Grid } from '@mui/material';
 // utils
-import { formatTime } from '../../../../utils/formatTime';
-import { fCurrency } from '../../../../utils/formatNumber';
+import { formatTime } from '../../../utils/formatTime';
+import { fCurrency } from '../../../utils/formatNumber';
 // @types
-import { Order } from '../../../../@types/order';
+import { Order } from '../../../@types/order';
 import React, { useCallback } from 'react';
 
 // ----------------------------------------------------------------------
@@ -66,11 +66,15 @@ export default function ProductTableRow({ index, row, selected, onSelectRow, onC
         <Checkbox checked={selected} onClick={onSelectRow} />
       </TableCell>
 
-      <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+      <TableCell
+        align="center"
+        sx={{ fontWeight: 'bold', cursor: 'pointer' }}
+        onClick={onSelectRow}
+      >
         {formatTime(row.createdAt)}
       </TableCell>
 
-      <TableCell align="left" sx={{ maxWidth: 0 }}>
+      <TableCell align="left" sx={{ maxWidth: 0, cursor: 'pointer' }} onClick={onSelectRow}>
         <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
           [메뉴 {row._count.orderHasProducts}개] {fCurrency(row.amount)}원
         </Typography>

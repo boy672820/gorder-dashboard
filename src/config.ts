@@ -40,7 +40,7 @@ export const defaultSettings: SettingsValueProps = {
   themeContrast: 'default',
   themeLayout: 'horizontal',
   themeColorPresets: 'blue',
-  themeStretch: false,
+  themeStretch: true,
 };
 
 // MULTI LANGUAGES

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { Order, OrderState } from '../../@types/order';
+import { Order, OrderState, OrderStatus } from '../../@types/order';
 import { dispatch } from '../store';
 import { OrderApi } from '../../apis/order';
 
@@ -37,6 +37,7 @@ const slice = createSlice({
 
     /**
      * 주문내역 전체 가져오기
+     * @param action 주문대기, 주문확인, 배송중, 배송완료, 주문취소 목록
      */
     getAllOrders(state, action) {
       state.isLoading = false;
@@ -54,16 +55,27 @@ const slice = createSlice({
       state.cancelledOrderTotalCount = action.payload.cancelledOrders.length;
     },
 
+    /**
+     * 주문 확인처리
+     * @param action 확인된 주문의 인덱스
+     */
     confirmOrder(state, action) {
-      state.isLoading = false;
-
       const index = action.payload;
-      const confirmedOrder = state.pendingOrders[index];
+      const pending = state.pendingOrders;
+
+      // 상태를 주문대기로 변경
+      pending[index] = {
+        ...pending[index],
+        status: OrderStatus.Confirmed,
+      };
 
       // 주문대기 목록의 총 개수 감소
       state.pendingOrderTotalCount -= 1;
       // 주문확인 목록의 맨 앞으로 이동, 총 개수 증가
-      state.confirmedOrderTotalCount = state.confirmedOrders.unshift(confirmedOrder);
+      state.confirmedOrderTotalCount = state.confirmedOrders.unshift(pending[index]);
+
+      // 로딩상태 해제
+      state.isLoading = false;
     },
   },
 });

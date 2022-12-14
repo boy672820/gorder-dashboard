@@ -31,7 +31,7 @@ import {
   TableSelectedActions,
 } from '../../components/table';
 // sections
-import { ProductTableRow } from '../../sections/@dashboard/e-commerce/product-list';
+import { OrderTableRow, OrderReceipt } from '../../sections/@dashboard/order';
 
 // ----------------------------------------------------------------------
 
@@ -168,7 +168,7 @@ export default function OrderWaitingList() {
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) =>
                       row ? (
-                        <ProductTableRow
+                        <OrderTableRow
                           key={index}
                           index={index}
                           row={row}
@@ -212,6 +212,8 @@ export default function OrderWaitingList() {
             />
           </Box>
         </Card>
+
+        <OrderReceipt />
       </Container>
     </Page>
   );
