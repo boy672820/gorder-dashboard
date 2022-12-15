@@ -13,7 +13,7 @@ export default function OrderReceipt() {
   return (
     <DialogAnimate open={open} onClose={handleClose}>
       <DialogContent>
-        <OrderReceiptContent />
+        <OrderReceiptContent onClose={handleClose} />
       </DialogContent>
     </DialogAnimate>
   );
