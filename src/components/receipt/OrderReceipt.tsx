@@ -12,12 +12,13 @@ import {
   Divider,
   Button,
   Stack,
+  Container,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import Image from '../../../../components/Image';
-import Label from '../../../../components/Label';
-import Scrollbar from '../../../../components/Scrollbar';
-import { fCurrency } from '../../../../utils/formatNumber';
+import { fCurrency } from '../../utils/formatNumber';
+import Image from '../Image';
+import Label from '../Label';
+import Scrollbar from '../Scrollbar';
 
 // ----------------------------------------------------------------------
 
@@ -70,7 +71,7 @@ export default function OrderReceiptContent({ onClose }: Props) {
   const theme = useTheme();
 
   return (
-    <>
+    <Container>
       <Grid container>
         <Grid item xs={12} sm={6} sx={{ mb: 5 }}>
           <Image
@@ -140,7 +141,7 @@ export default function OrderReceiptContent({ onClose }: Props) {
                   <TableCell align="right">{fCurrency(3000)}원</TableCell>
 
                   <TableCell align="right">
-                    <Typography variant="body2">
+                    <Typography variant="body2" component="div">
                       {fCurrency(1500)}원
                       <Typography component={Box} variant="caption" sx={{ color: 'text.disabled' }}>
                         50% 할인
@@ -206,6 +207,6 @@ export default function OrderReceiptContent({ onClose }: Props) {
           닫기
         </Button>
       </Stack>
-    </>
+    </Container>
   );
 }

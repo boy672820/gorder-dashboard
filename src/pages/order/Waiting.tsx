@@ -31,7 +31,8 @@ import {
   TableSelectedActions,
 } from '../../components/table';
 // sections
-import { OrderTableRow, OrderReceipt } from '../../sections/@dashboard/order';
+import { OrderTableRow } from '../../sections/@dashboard/order';
+import { ReceiptProvider } from '../../contexts/ReceiptContext';
 
 // ----------------------------------------------------------------------
 
@@ -92,6 +93,11 @@ export default function OrderWaitingList() {
     dispatch(confirmOrder(orderId, index));
   };
 
+  const dataFiltered = applySortFilter({
+    tableData,
+    comparator: getComparator(order, orderBy),
+  });
+
   // const handleFilterName = (filterName: string) => {
   //   setFilterName(filterName);
   //   setPage(0);
@@ -103,11 +109,6 @@ export default function OrderWaitingList() {
   //   filterName,
   // });
 
-  const dataFiltered = applySortFilter({
-    tableData,
-    comparator: getComparator(order, orderBy),
-  });
-
   const denseHeight = dense ? 60 : 80;
 
   // const isNotFound = (!dataFiltered.length && !!filterName) || (!isLoading && !dataFiltered.length);
@@ -116,106 +117,106 @@ export default function OrderWaitingList() {
   const heading = `주문대기${orderTotalCount ? `(${orderTotalCount})` : ''}`;
 
   return (
-    <Page title={heading}>
-      <Container maxWidth={themeStretch ? false : 'lg'}>
-        <HeaderBreadcrumbs
-          heading={heading}
-          links={[
-            { name: '대시보드', href: '/' },
-            {
-              name: '주문관리',
-              href: '/',
-            },
-            { name: heading },
-          ]}
-        />
+    <ReceiptProvider>
+      <Page title={heading}>
+        <Container maxWidth={themeStretch ? false : 'lg'}>
+          <HeaderBreadcrumbs
+            heading={heading}
+            links={[
+              { name: '대시보드', href: '/' },
+              {
+                name: '주문관리',
+                href: '/',
+              },
+              { name: heading },
+            ]}
+          />
 
-        <Card>
-          <Scrollbar>
-            <TableContainer sx={{ minWidth: 760, position: 'relative' }}>
-              {selected.length > 0 && (
-                <TableSelectedActions
-                  dense={dense}
-                  numSelected={selected.length}
-                  rowCount={tableData.length}
-                  onSelectAllRows={(checked) =>
-                    onSelectAllRows(
-                      checked,
-                      tableData.map((row) => row.orderId)
-                    )
-                  }
-                />
-              )}
-
-              <Table size={dense ? 'small' : 'medium'}>
-                <TableHeadCustom
-                  order={order}
-                  orderBy={orderBy}
-                  headLabel={TABLE_HEAD}
-                  rowCount={tableData.length}
-                  numSelected={selected.length}
-                  onSort={onSort}
-                  onSelectAllRows={(checked) =>
-                    onSelectAllRows(
-                      checked,
-                      tableData.map((row) => row.orderId)
-                    )
-                  }
-                />
-
-                <TableBody>
-                  {(isLoading ? [...(Array(rowsPerPage) as Order[])] : dataFiltered)
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row, index) =>
-                      row ? (
-                        <OrderTableRow
-                          key={index}
-                          index={index}
-                          row={row}
-                          selected={selected.includes(row.orderId)}
-                          onSelectRow={() => onSelectRow(row.orderId)}
-                          onConfirm={handleConfirm}
-                        />
-                      ) : (
-                        !isNotFound && <TableSkeleton key={index} sx={{ height: denseHeight }} />
+          <Card>
+            <Scrollbar>
+              <TableContainer sx={{ minWidth: 760, position: 'relative' }}>
+                {selected.length > 0 && (
+                  <TableSelectedActions
+                    dense={dense}
+                    numSelected={selected.length}
+                    rowCount={tableData.length}
+                    onSelectAllRows={(checked) =>
+                      onSelectAllRows(
+                        checked,
+                        tableData.map((row) => row.orderId)
                       )
-                    )}
+                    }
+                  />
+                )}
 
-                  <TableEmptyRows
-                    height={denseHeight}
-                    emptyRows={emptyRows(page, rowsPerPage, tableData.length)}
+                <Table size={dense ? 'small' : 'medium'}>
+                  <TableHeadCustom
+                    order={order}
+                    orderBy={orderBy}
+                    headLabel={TABLE_HEAD}
+                    rowCount={tableData.length}
+                    numSelected={selected.length}
+                    onSort={onSort}
+                    onSelectAllRows={(checked) =>
+                      onSelectAllRows(
+                        checked,
+                        tableData.map((row) => row.orderId)
+                      )
+                    }
                   />
 
-                  <TableNoData isNotFound={isNotFound} />
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Scrollbar>
+                  <TableBody>
+                    {(isLoading ? [...(Array(rowsPerPage) as Order[])] : dataFiltered)
+                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((row, index) =>
+                        row ? (
+                          <OrderTableRow
+                            key={index}
+                            index={index}
+                            row={row}
+                            selected={selected.includes(row.orderId)}
+                            onSelectRow={() => onSelectRow(row.orderId)}
+                            onConfirm={handleConfirm}
+                          />
+                        ) : (
+                          !isNotFound && <TableSkeleton key={index} sx={{ height: denseHeight }} />
+                        )
+                      )}
 
-          <Box sx={{ position: 'relative' }}>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              component="div"
-              count={dataFiltered.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={onChangePage}
-              onRowsPerPageChange={onChangeRowsPerPage}
-              labelRowsPerPage="페이지당 표시 수"
-              labelDisplayedRows={({ from, to, count }) => `${from}-${to} / ${count}`}
-            />
+                    <TableEmptyRows
+                      height={denseHeight}
+                      emptyRows={emptyRows(page, rowsPerPage, tableData.length)}
+                    />
 
-            <FormControlLabel
-              control={<Switch checked={dense} onChange={onChangeDense} />}
-              label="작은 사이즈"
-              sx={{ px: 3, py: 1.5, top: 0, position: { md: 'absolute' } }}
-            />
-          </Box>
-        </Card>
+                    <TableNoData isNotFound={isNotFound} />
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Scrollbar>
 
-        <OrderReceipt />
-      </Container>
-    </Page>
+            <Box sx={{ position: 'relative' }}>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={dataFiltered.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={onChangePage}
+                onRowsPerPageChange={onChangeRowsPerPage}
+                labelRowsPerPage="페이지당 표시 수"
+                labelDisplayedRows={({ from, to, count }) => `${from}-${to} / ${count}`}
+              />
+
+              <FormControlLabel
+                control={<Switch checked={dense} onChange={onChangeDense} />}
+                label="작은 사이즈"
+                sx={{ px: 3, py: 1.5, top: 0, position: { md: 'absolute' } }}
+              />
+            </Box>
+          </Card>
+        </Container>
+      </Page>
+    </ReceiptProvider>
   );
 }
 

@@ -5,6 +5,7 @@ import { fCurrency } from '../../../utils/formatNumber';
 // @types
 import { Order } from '../../../@types/order';
 import React, { useCallback } from 'react';
+import useReceipt from '../../../hooks/useReceipt';
 
 // ----------------------------------------------------------------------
 
@@ -60,6 +61,8 @@ export default function ProductTableRow({ index, row, selected, onSelectRow, onC
     [onConfirm]
   );
 
+  const { onOpenReceipt } = useReceipt();
+
   return (
     <TableRow hover selected={selected}>
       <TableCell padding="checkbox">
@@ -93,7 +96,14 @@ export default function ProductTableRow({ index, row, selected, onSelectRow, onC
       <TableCell align="right">
         <Grid container spacing={1}>
           <Grid item xs={6}>
-            <Button type="button" variant="outlined" color="secondary" size="large" fullWidth>
+            <Button
+              type="button"
+              variant="outlined"
+              color="secondary"
+              size="large"
+              fullWidth
+              onClick={onOpenReceipt}
+            >
               주문표
             </Button>
           </Grid>
