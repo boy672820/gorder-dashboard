@@ -3,7 +3,6 @@ import { DialogContent } from '@mui/material';
 import { DialogAnimate } from '../animate';
 // types
 import { ReceiptContextProps } from '../../contexts/ReceiptContext';
-import { Order } from '../../@types/order';
 // components
 import OrderReceiptContent from './OrderReceipt';
 
@@ -12,16 +11,16 @@ import OrderReceiptContent from './OrderReceipt';
 type Props = {
   open: ReceiptContextProps['openReceipt'];
   onClose: ReceiptContextProps['onCloseReceipt'];
-  data: Order | null;
+  data: ReceiptContextProps['receiptData'];
 };
 
 // -----------------------------------------------------------------
 
-export default function OrderReceipt({ open, onClose }: Props) {
+export default function OrderReceipt({ open, onClose, data }: Props) {
   return (
     <DialogAnimate open={open} onClose={onClose}>
       <DialogContent>
-        <OrderReceiptContent onClose={onClose} />
+        <OrderReceiptContent onClose={onClose} data={data} />
       </DialogContent>
     </DialogAnimate>
   );
