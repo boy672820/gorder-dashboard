@@ -17,6 +17,7 @@ export type OrderProduct = {
   discount: number;
   totalPrice: number;
   quantity: number;
+  imageUrl: string;
 };
 
 export type Order = {

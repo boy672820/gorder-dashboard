@@ -1,10 +1,13 @@
 import { createContext, ReactNode, useCallback, useState } from 'react';
+// components
 import OrderReceipt from '../components/receipt/Index';
+// types
+import { Order } from '../@types/order';
 
 export type ReceiptContextProps = {
   openReceipt: boolean;
   onCloseReceipt: VoidFunction;
-  onOpenReceipt: VoidFunction;
+  onOpenReceipt: (data: Order) => void;
 };
 
 const initialState: ReceiptContextProps = {
@@ -20,17 +23,20 @@ type ReceiptProviderProps = {
 };
 
 function ReceiptProvider({ children }: ReceiptProviderProps) {
-  // Receipt Dialog
+  // states
   const [openReceipt, setOpenReceipt] = useState<boolean>(false);
+  const [receiptData, setReceiptData] = useState<Order | null>(null);
 
   /**
    * Close Receipt Dialog
    */
   const onCloseReceipt = useCallback(() => {
     setOpenReceipt(false);
+    setReceiptData(null);
   }, []);
 
-  const onOpenReceipt = useCallback(() => {
+  const onOpenReceipt = useCallback((data: Order) => {
+    setReceiptData(data);
     setOpenReceipt(true);
   }, []);
 
@@ -44,7 +50,7 @@ function ReceiptProvider({ children }: ReceiptProviderProps) {
     >
       {children}
 
-      <OrderReceipt openReceipt={openReceipt} onCloseReceipt={onCloseReceipt} />
+      <OrderReceipt open={openReceipt} onClose={onCloseReceipt} data={receiptData} />
     </ReceiptContext.Provider>
   );
 }

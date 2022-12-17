@@ -1,45 +1,14 @@
+import { useState, useCallback } from 'react';
 import { TableRow, Checkbox, TableCell, Typography, Button, Grid } from '@mui/material';
+// components
+import { SerializedMenu } from '../../../components/order';
+// hooks
+import useReceipt from '../../../hooks/useReceipt';
 // utils
 import { formatTime } from '../../../utils/formatTime';
 import { fCurrency } from '../../../utils/formatNumber';
 // @types
 import { Order } from '../../../@types/order';
-import React, { useCallback } from 'react';
-import useReceipt from '../../../hooks/useReceipt';
-
-// ----------------------------------------------------------------------
-
-const serializeMenu = (products: Order['orderHasProducts']) => {
-  let key = 0;
-
-  const result = products.reduce((acc, product, index) => {
-    acc.push(
-      <React.Fragment key={key}>
-        &nbsp;/&nbsp;
-        {product.name}
-        <Typography variant="body2" sx={{ color: 'text.secondary' }} component="span">
-          (+{product.quantity})
-        </Typography>
-      </React.Fragment>
-    );
-    key += 1;
-
-    return acc;
-  }, [] as any);
-
-  result[0] = (
-    <React.Fragment key={0}>
-      {products[0].name}
-      <Typography variant="body2" sx={{ color: 'text.secondary' }} component="span">
-        (+{products[0].quantity})
-      </Typography>
-    </React.Fragment>
-  );
-
-  return result;
-};
-
-// ----------------------------------------------------------------------
 
 type Props = {
   index: number;
@@ -50,8 +19,23 @@ type Props = {
 };
 
 export default function ProductTableRow({ index, row, selected, onSelectRow, onConfirm }: Props) {
-  const [confirmed, setConfirmed] = React.useState<boolean>(false);
+  // Receipt hook
+  const { onOpenReceipt } = useReceipt();
 
+  /**
+   * Open Receipt Dialog
+   */
+  const handleOpenReceipt = useCallback(() => {
+    onOpenReceipt(row);
+  }, [onOpenReceipt, row]);
+
+  // ---------------------------------------------------------------------------------------------
+
+  const [confirmed, setConfirmed] = useState<boolean>(false);
+
+  /**
+   * Change order status to Confirm
+   */
   const handleConfirm = useCallback(
     async (orderId: Order['orderId'], index: number) => {
       await onConfirm(orderId, index);
@@ -61,7 +45,7 @@ export default function ProductTableRow({ index, row, selected, onSelectRow, onC
     [onConfirm]
   );
 
-  const { onOpenReceipt } = useReceipt();
+  // ---------------------------------------------------------------------------------------------
 
   return (
     <TableRow hover selected={selected}>
@@ -89,7 +73,7 @@ export default function ProductTableRow({ index, row, selected, onSelectRow, onC
             whiteSpace: 'nowrap',
           }}
         >
-          {serializeMenu(row.orderHasProducts)}
+          <SerializedMenu products={row.orderHasProducts} />
         </Typography>
       </TableCell>
 
@@ -102,7 +86,7 @@ export default function ProductTableRow({ index, row, selected, onSelectRow, onC
               color="secondary"
               size="large"
               fullWidth
-              onClick={onOpenReceipt}
+              onClick={handleOpenReceipt}
             >
               주문표
             </Button>

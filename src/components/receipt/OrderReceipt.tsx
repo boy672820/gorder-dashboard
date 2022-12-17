@@ -150,7 +150,7 @@ export default function OrderReceiptContent({ onClose }: Props) {
                   </TableCell>
 
                   <TableCell align="right">
-                    <Typography variant="subtitle2">
+                    <Typography variant="subtitle2" component="div">
                       {fCurrency(1500)}원
                       <Typography
                         component={Box}
