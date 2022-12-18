@@ -1,27 +1,19 @@
-import { format, getTime, formatDistanceToNow } from 'date-fns';
+import { format, formatDistanceToNow } from 'date-fns';
 
-// ----------------------------------------------------------------------
+export function formatTime(date?: Date | string | number) {
+  if (!date) {
+    return '00:00';
+  }
 
-export function formatTime(date: Date | string | number) {
-  return format(new Date(date), 'hh:mm');
+  const d = new Date(date);
+  const hm = format(d, 'hh:mm');
+  const a = format(d, 'a') === 'AM' ? '오전' : '오후';
+
+  return `${a} ${hm}`;
 }
 
-// ----------------------------------------------------------------------
-
-export function fDate(date: Date | string | number) {
-  return format(new Date(date), 'dd MMMM yyyy');
-}
-
-export function fDateTime(date: Date | string | number) {
-  return format(new Date(date), 'dd MMM yyyy p');
-}
-
-export function fTimestamp(date: Date | string | number) {
-  return getTime(new Date(date));
-}
-
-export function fDateTimeSuffix(date: Date | string | number) {
-  return format(new Date(date), 'dd/MM/yyyy hh:mm p');
+export function formatDate(date?: Date | string | number) {
+  return date ? format(new Date(date), 'yyyy년 MM월 d일') : '0000년 00월 00일';
 }
 
 export function fToNow(date: Date | string | number) {

@@ -1,8 +1,18 @@
 import { Grid, Box, Typography, useTheme } from '@mui/material';
+// components
 import Image from '../Image';
 import Label from '../Label';
+// utils
+import { formatDate, formatTime } from '../../utils/formatTime';
+// types
+import { Order, OrderStatusLabel } from '../../@types/order';
 
-export default function OrderReceiptHeader() {
+type Props = {
+  status?: Order['status'];
+  createdAt?: Order['createdAt'];
+};
+
+export default function OrderReceiptHeader({ status, createdAt }: Props) {
   const theme = useTheme();
 
   return (
@@ -24,7 +34,7 @@ export default function OrderReceiptHeader() {
             color="error"
             sx={{ textTransform: 'uppercase', mb: 1 }}
           >
-            주문 대기 중
+            {status ? OrderStatusLabel[status] : '-'}
           </Label>
         </Box>
       </Grid>
@@ -33,13 +43,13 @@ export default function OrderReceiptHeader() {
         <Typography paragraph variant="overline" sx={{ color: 'text.disabled' }}>
           결제 날짜
         </Typography>
-        <Typography variant="body2">2022년 12월 15일</Typography>
+        <Typography variant="body2">{formatDate(createdAt)}</Typography>
       </Grid>
       <Grid item xs={12} sm={6} sx={{ mb: 5 }}>
         <Typography paragraph variant="overline" sx={{ color: 'text.disabled' }}>
           결제 시간
         </Typography>
-        <Typography variant="body2">오후 15:41</Typography>
+        <Typography variant="body2">{formatTime(createdAt)}</Typography>
       </Grid>
     </Grid>
   );

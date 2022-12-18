@@ -11,6 +11,14 @@ export enum OrderStatus {
   Cancelled = 'Cancelled', // 주문취소
 }
 
+export const OrderStatusLabel: { [keyof in OrderStatus]: string } = {
+  [OrderStatus.Pending]: '주문 대기 중',
+  [OrderStatus.Confirmed]: '주문 확인',
+  [OrderStatus.Delivering]: '배달 중',
+  [OrderStatus.Completed]: '완료',
+  [OrderStatus.Cancelled]: '주문 취소',
+} as const;
+
 export type OrderProduct = {
   name: string;
   basePrice: number;
