@@ -1,8 +1,16 @@
 import { Box, TableCell, TableRow, Typography } from '@mui/material';
+// utils
 import { fCurrency } from '../../../utils/formatNumber';
+// components
 import Image from '../../Image';
+// types
+import { OrderProduct } from '../../../@types/order';
 
-export default function OrderReceiptTableProductRow() {
+type Props = {
+  row: OrderProduct;
+};
+
+export default function OrderReceiptTableProductRow({ row }: Props) {
   return (
     <TableRow
       sx={{
@@ -19,32 +27,32 @@ export default function OrderReceiptTableProductRow() {
           sx={{ borderRadius: 1.5, width: 48, height: 48, mr: 2 }}
         />
         <Typography variant="subtitle2" noWrap>
-          아메리카노 ICE
+          {row.name}
         </Typography>
       </TableCell>
 
-      <TableCell align="center">1개</TableCell>
+      <TableCell align="center">{row.quantity}개</TableCell>
 
-      <TableCell align="right">{fCurrency(3000)}원</TableCell>
+      <TableCell align="right">{fCurrency(row.basePrice)}원</TableCell>
 
       <TableCell align="right">
         <Typography variant="body2" component="div">
-          {fCurrency(1500)}원
+          {fCurrency(row.discountPrice)}원
           <Typography component={Box} variant="caption" sx={{ color: 'text.disabled' }}>
-            50% 할인
+            {row.discountPercent} 할인
           </Typography>
         </Typography>
       </TableCell>
 
       <TableCell align="right">
         <Typography variant="subtitle2" component="div">
-          {fCurrency(1500)}원
+          {fCurrency(row.totalPrice)}원
           <Typography
             component={Box}
             variant="caption"
             sx={{ color: 'text.disabled', textDecoration: 'line-through' }}
           >
-            {fCurrency(3000)}원
+            {fCurrency(row.basePrice)}원
           </Typography>
         </Typography>
       </TableCell>

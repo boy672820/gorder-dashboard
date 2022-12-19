@@ -63,7 +63,7 @@ export default function ProductTableRow({ index, row, selected, onSelectRow, onC
 
       <TableCell align="left" sx={{ maxWidth: 0, cursor: 'pointer' }} onClick={onSelectRow}>
         <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-          [메뉴 {row._count.orderHasProducts}개] {fCurrency(row.amount)}원
+          [메뉴 {row._count.orderHasProducts}개] {fCurrency(row.totalPrice)}원
         </Typography>
         <Typography
           variant="body2"

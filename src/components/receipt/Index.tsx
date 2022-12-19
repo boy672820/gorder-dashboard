@@ -1,26 +1,17 @@
 import { DialogContent } from '@mui/material';
+import useReceipt from '../../hooks/useReceipt';
 // components
 import { DialogAnimate } from '../animate';
-// types
-import { ReceiptContextProps } from '../../contexts/ReceiptContext';
 // components
 import OrderReceiptContent from './OrderReceipt';
 
-// -----------------------------------------------------------------
+export default function OrderReceipt() {
+  const { openReceipt, onCloseReceipt } = useReceipt();
 
-type Props = {
-  open: ReceiptContextProps['openReceipt'];
-  onClose: ReceiptContextProps['onCloseReceipt'];
-  data: ReceiptContextProps['receiptData'];
-};
-
-// -----------------------------------------------------------------
-
-export default function OrderReceipt({ open, onClose, data }: Props) {
   return (
-    <DialogAnimate open={open} onClose={onClose}>
+    <DialogAnimate open={openReceipt} onClose={onCloseReceipt}>
       <DialogContent>
-        <OrderReceiptContent onClose={onClose} data={data} />
+        <OrderReceiptContent />
       </DialogContent>
     </DialogAnimate>
   );

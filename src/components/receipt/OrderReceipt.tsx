@@ -1,4 +1,6 @@
-import { TableContainer, Table, TableBody, Divider, Button, Stack, Grid } from '@mui/material';
+import { TableContainer, Table, TableBody, Divider, Button, Stack } from '@mui/material';
+// hooks
+import useReceipt from '../../hooks/useReceipt';
 // components
 import Scrollbar from '../Scrollbar';
 import OrderReceiptHeader from './OrderReceiptHeader';
@@ -7,22 +9,17 @@ import {
   OrderReceiptTableProductRow,
   OrderReceiptTableTotalRow,
 } from './table';
-// types
-import { ReceiptContextProps } from '../../contexts/ReceiptContext';
 
 // ----------------------------------------------------------------------
 
-type Props = {
-  data: ReceiptContextProps['receiptData'];
-  onClose: ReceiptContextProps['onCloseReceipt'];
-};
+export default function OrderReceiptContent() {
+  const { receiptData, onCloseReceipt } = useReceipt();
 
-// ----------------------------------------------------------------------
+  const products = receiptData?.orderHasProducts || [];
 
-export default function OrderReceiptContent({ data, onClose }: Props) {
   return (
     <>
-      <OrderReceiptHeader createdAt={data?.createdAt} status={data?.status} />
+      <OrderReceiptHeader />
 
       <Scrollbar>
         <TableContainer>
@@ -30,9 +27,10 @@ export default function OrderReceiptContent({ data, onClose }: Props) {
             <OrderReceiptTableHead />
 
             <TableBody>
-              {[...Array(3)].map((_, index) => (
-                <OrderReceiptTableProductRow key={index} />
+              {products.map((product, index) => (
+                <OrderReceiptTableProductRow key={index} row={product} />
               ))}
+
               <OrderReceiptTableTotalRow />
             </TableBody>
           </Table>
@@ -42,12 +40,12 @@ export default function OrderReceiptContent({ data, onClose }: Props) {
       <Divider sx={{ mt: 1.5 }} />
 
       <Stack justifyContent="space-between" direction="row" sx={{ mt: 2.5 }}>
-        <Button variant="outlined" color="error" onClick={onClose}>
+        <Button variant="text" color="inherit" onClick={onCloseReceipt}>
           주문 취소
         </Button>
 
         <Stack direction="row" gap={1}>
-          <Button variant="outlined" color="inherit" onClick={onClose}>
+          <Button variant="outlined" color="inherit" onClick={onCloseReceipt}>
             닫기
           </Button>
           <Button variant="contained" color="primary">

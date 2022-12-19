@@ -13,7 +13,7 @@ export enum OrderStatus {
 
 export const OrderStatusLabel: { [keyof in OrderStatus]: string } = {
   [OrderStatus.Pending]: '주문 대기 중',
-  [OrderStatus.Confirmed]: '주문 확인',
+  [OrderStatus.Confirmed]: '주문 확인 완료',
   [OrderStatus.Delivering]: '배달 중',
   [OrderStatus.Completed]: '완료',
   [OrderStatus.Cancelled]: '주문 취소',
@@ -22,7 +22,8 @@ export const OrderStatusLabel: { [keyof in OrderStatus]: string } = {
 export type OrderProduct = {
   name: string;
   basePrice: number;
-  discount: number;
+  discountPrice: number;
+  discountPercent: number;
   totalPrice: number;
   quantity: number;
   imageUrl: string;
@@ -30,7 +31,9 @@ export type OrderProduct = {
 
 export type Order = {
   orderId: string;
-  amount: number;
+  basePrice: number;
+  discountPrice: number;
+  totalPrice: number;
   type: OrderType;
   status: OrderStatus;
   createdAt: string;

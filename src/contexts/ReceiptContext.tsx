@@ -66,7 +66,7 @@ function ReceiptProvider({ children }: ReceiptProviderProps) {
     >
       {children}
 
-      <OrderReceipt open={openReceipt} onClose={onCloseReceipt} data={receiptData} />
+      <OrderReceipt />
     </ReceiptContext.Provider>
   );
 }

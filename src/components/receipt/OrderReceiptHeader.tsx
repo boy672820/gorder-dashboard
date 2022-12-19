@@ -1,19 +1,21 @@
 import { Grid, Box, Typography, useTheme } from '@mui/material';
+// hooks
+import useReceipt from '../../hooks/useReceipt';
+// utils
+import { formatDate, formatTime } from '../../utils/formatTime';
 // components
 import Image from '../Image';
 import Label from '../Label';
-// utils
-import { formatDate, formatTime } from '../../utils/formatTime';
 // types
-import { Order, OrderStatusLabel } from '../../@types/order';
+import { OrderStatus, OrderStatusLabel } from '../../@types/order';
 
-type Props = {
-  status?: Order['status'];
-  createdAt?: Order['createdAt'];
-};
-
-export default function OrderReceiptHeader({ status, createdAt }: Props) {
+export default function OrderReceiptHeader() {
   const theme = useTheme();
+
+  const { receiptData } = useReceipt();
+
+  const status = receiptData?.status;
+  const createdAt = receiptData?.createdAt;
 
   return (
     <Grid container>
@@ -31,8 +33,14 @@ export default function OrderReceiptHeader({ status, createdAt }: Props) {
         <Box sx={{ textAlign: { sm: 'right' } }}>
           <Label
             variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-            color="error"
-            sx={{ textTransform: 'uppercase', mb: 1 }}
+            color={
+              (status === OrderStatus.Pending && 'info') ||
+              (status === OrderStatus.Confirmed && 'secondary') ||
+              (status === OrderStatus.Delivering && 'warning') ||
+              (status === OrderStatus.Completed && 'success') ||
+              (status === OrderStatus.Cancelled && 'error') ||
+              'default'
+            }
           >
             {status ? OrderStatusLabel[status] : '-'}
           </Label>

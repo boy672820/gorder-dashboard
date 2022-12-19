@@ -2,7 +2,7 @@ import { format, formatDistanceToNow } from 'date-fns';
 
 export function formatTime(date?: Date | string | number) {
   if (!date) {
-    return '00:00';
+    return '-- 00:00';
   }
 
   const d = new Date(date);
