@@ -5,13 +5,17 @@ import { DialogAnimate } from '../animate';
 // components
 import OrderReceiptContent from './OrderReceipt';
 
-export default function OrderReceipt() {
+type Props = {
+  pendingMode?: boolean;
+};
+
+export default function OrderReceipt({ pendingMode }: Props) {
   const { openReceipt, onCloseReceipt } = useReceipt();
 
   return (
     <DialogAnimate open={openReceipt} onClose={onCloseReceipt}>
       <DialogContent>
-        <OrderReceiptContent />
+        <OrderReceiptContent pendingMode={pendingMode} />
       </DialogContent>
     </DialogAnimate>
   );

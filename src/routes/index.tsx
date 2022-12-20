@@ -32,7 +32,7 @@ export default function Router() {
       children: [
         { element: <Navigate to={PATH_PAGE.order.waiting} replace />, index: true },
         { path: PATH_PAGE.order.waiting, element: <Waiting /> },
-        { path: PATH_PAGE.order.processing, element: <Waiting /> },
+        { path: PATH_PAGE.order.processing, element: <Processing /> },
         { path: PATH_PAGE.order.completed, element: <Waiting /> },
       ],
     },
@@ -50,4 +50,5 @@ export default function Router() {
 
 // Dashboard
 const Waiting = Loadable(lazy(() => import('../pages/order/Waiting')));
+const Processing = Loadable(lazy(() => import('../pages/order/Processing')));
 const NotFound = Loadable(lazy(() => import('../pages/Page404')));

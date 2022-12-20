@@ -34,11 +34,11 @@ export default function OrderReceiptHeader() {
           <Label
             variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
             color={
-              (status === OrderStatus.Pending && 'info') ||
-              (status === OrderStatus.Confirmed && 'secondary') ||
+              (status === OrderStatus.Pending && 'primary') ||
+              (status === OrderStatus.Confirmed && 'error') ||
               (status === OrderStatus.Delivering && 'warning') ||
               (status === OrderStatus.Completed && 'success') ||
-              (status === OrderStatus.Cancelled && 'error') ||
+              (status === OrderStatus.Cancelled && 'default') ||
               'default'
             }
           >

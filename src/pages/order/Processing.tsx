@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 // redux
 import { useDispatch, useSelector } from '../../redux/store';
-import { confirmOrder, getOrders } from '../../redux/slices/order';
+import { completeOrder, getOrders } from '../../redux/slices/order';
 // hooks
 import useSettings from '../../hooks/useSettings';
 import useTable, { getComparator, emptyRows } from '../../hooks/useTable';
@@ -31,7 +31,7 @@ import {
   TableSelectedActions,
 } from '../../components/table';
 // sections
-import { OrderTableRow, WaitingOrderAction } from '../../sections/@dashboard/order';
+import { OrderTableRow, ProcessingOrderAction } from '../../sections/@dashboard/order';
 import { ReceiptProvider } from '../../contexts/ReceiptContext';
 
 // ----------------------------------------------------------------------
@@ -44,7 +44,7 @@ const TABLE_HEAD = [
 
 // ----------------------------------------------------------------------
 
-export default function OrderWaitingList() {
+export default function OrderProcessingList() {
   const {
     dense,
     page,
@@ -70,8 +70,8 @@ export default function OrderWaitingList() {
   const dispatch = useDispatch();
 
   const {
-    pendingOrders: orders,
-    pendingOrderTotalCount: orderTotalCount,
+    confirmedOrders: orders,
+    confirmedOrderTotalCount: orderTotalCount,
     isLoading,
   } = useSelector((state) => state.order);
 
@@ -91,8 +91,8 @@ export default function OrderWaitingList() {
     }
   }, [orders]);
 
-  const handleConfirm = ({ order, index }: { order: Order; index: number }) => {
-    dispatch(confirmOrder(order.orderId, index));
+  const handleComplete = ({ order, index }: { order: Order; index: number }) => {
+    dispatch(completeOrder(order.orderId, index));
   };
 
   const dataFiltered = applySortFilter({
@@ -116,10 +116,10 @@ export default function OrderWaitingList() {
   // const isNotFound = (!dataFiltered.length && !!filterName) || (!isLoading && !dataFiltered.length);
   const isNotFound = !isLoading && !dataFiltered.length;
 
-  const heading = `주문대기${orderTotalCount ? `(${orderTotalCount})` : ''}`;
+  const heading = `조리 중${orderTotalCount ? `(${orderTotalCount})` : ''}`;
 
   return (
-    <ReceiptProvider pendingMode={true}>
+    <ReceiptProvider>
       <Page title={heading}>
         <Container maxWidth={themeStretch ? false : 'lg'}>
           <HeaderBreadcrumbs
@@ -178,10 +178,10 @@ export default function OrderWaitingList() {
                             selected={selected.includes(row.orderId)}
                             onSelectRow={() => onSelectRow(row.orderId)}
                             Action={
-                              <WaitingOrderAction
+                              <ProcessingOrderAction
                                 row={row}
                                 index={index}
-                                onConfirm={handleConfirm}
+                                onComplete={handleComplete}
                               />
                             }
                           />

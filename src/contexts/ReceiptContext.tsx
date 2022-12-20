@@ -6,32 +6,38 @@ import { Order } from '../@types/order';
 
 // ----------------------------------------------------------------------
 
+type ReceiptStateArgs = { data: Order; index: number };
+
 export type ReceiptContextProps = {
   openReceipt: boolean;
-  onCloseReceipt: VoidFunction;
-  onOpenReceipt: (data: Order) => void;
+  stateIndex: number | null;
   receiptData: Order | null;
+  onOpenReceipt: (args: ReceiptStateArgs) => void;
+  onCloseReceipt: VoidFunction;
 };
 
 // ----------------------------------------------------------------------
 
 const initialState: ReceiptContextProps = {
   openReceipt: false,
+  receiptData: null,
+  stateIndex: null,
   onCloseReceipt: () => {},
   onOpenReceipt: () => {},
-  receiptData: null,
 };
 
 const ReceiptContext = createContext(initialState);
 
 type ReceiptProviderProps = {
+  pendingMode?: boolean;
   children: ReactNode;
 };
 
-function ReceiptProvider({ children }: ReceiptProviderProps) {
+function ReceiptProvider({ children, pendingMode }: ReceiptProviderProps) {
   // states
   const [openReceipt, setOpenReceipt] = useState<boolean>(false);
   const [receiptData, setReceiptData] = useState<Order | null>(null);
+  const [stateIndex, setStateIndex] = useState<number | null>(null);
 
   // ----------------------------------------------------------------------
 
@@ -41,6 +47,7 @@ function ReceiptProvider({ children }: ReceiptProviderProps) {
   const onCloseReceipt = useCallback(() => {
     setOpenReceipt(false);
     setReceiptData(null);
+    setStateIndex(null);
   }, []);
 
   /**
@@ -48,8 +55,9 @@ function ReceiptProvider({ children }: ReceiptProviderProps) {
    *
    * @params {Order} Order
    */
-  const onOpenReceipt = useCallback((data: Order) => {
+  const onOpenReceipt = useCallback(({ data, index }: { data: Order; index: number }) => {
     setReceiptData(data);
+    setStateIndex(index);
     setOpenReceipt(true);
   }, []);
 
@@ -59,14 +67,15 @@ function ReceiptProvider({ children }: ReceiptProviderProps) {
     <ReceiptContext.Provider
       value={{
         openReceipt,
-        onCloseReceipt,
-        onOpenReceipt,
+        stateIndex,
         receiptData,
+        onOpenReceipt,
+        onCloseReceipt,
       }}
     >
       {children}
 
-      <OrderReceipt />
+      <OrderReceipt pendingMode={pendingMode} />
     </ReceiptContext.Provider>
   );
 }

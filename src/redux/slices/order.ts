@@ -64,15 +64,32 @@ const slice = createSlice({
       const pending = state.pendingOrders;
 
       // 상태를 주문대기로 변경
-      pending[index] = {
-        ...pending[index],
-        status: OrderStatus.Confirmed,
-      };
+      pending[index].status = OrderStatus.Confirmed;
 
       // 주문대기 목록의 총 개수 감소
       state.pendingOrderTotalCount -= 1;
+
       // 주문확인 목록의 맨 앞으로 이동, 총 개수 증가
-      state.confirmedOrderTotalCount = state.confirmedOrders.unshift(pending[index]);
+      state.confirmedOrders.unshift(pending[index]);
+      state.confirmedOrderTotalCount += 1;
+
+      // 로딩상태 해제
+      state.isLoading = false;
+    },
+
+    completeOrder(state, action) {
+      const index = action.payload;
+      const confirmed = state.confirmedOrders;
+
+      // 상태를 주문대기로 변경
+      confirmed[index].status = OrderStatus.Completed;
+
+      // 주문확인 목록의 총 개수 감소
+      state.confirmedOrderTotalCount -= 1;
+
+      // 완료 목록의 맨 앞으로 이동, 총 개수 증가
+      state.completedOrders.unshift(confirmed[index]);
+      state.completedOrderTotalCount += 1;
 
       // 로딩상태 해제
       state.isLoading = false;
@@ -101,5 +118,15 @@ export const confirmOrder = (orderId: Order['orderId'], index: number) => async 
     dispatch(slice.actions.confirmOrder(index));
   } catch (e) {
     dispatch(slice.actions.hasError(e.message));
+  }
+};
+
+export const completeOrder = (orderId: Order['orderId'], index: number) => async () => {
+  dispatch(slice.actions.startLoading());
+
+  try {
+    dispatch(slice.actions.completeOrder(index));
+  } catch (e) {
+    dispatch(slice.actions.hasError(e));
   }
 };
