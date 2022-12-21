@@ -12,10 +12,10 @@ export enum OrderStatus {
 }
 
 export const OrderStatusLabel: { [keyof in OrderStatus]: string } = {
-  [OrderStatus.Pending]: '주문 대기 중',
-  [OrderStatus.Confirmed]: '주문 확인 완료',
+  [OrderStatus.Pending]: '대기 중',
+  [OrderStatus.Confirmed]: '조리 중',
   [OrderStatus.Delivering]: '배달 중',
-  [OrderStatus.Completed]: '완료',
+  [OrderStatus.Completed]: '조리 완료',
   [OrderStatus.Cancelled]: '주문 취소',
 } as const;
 

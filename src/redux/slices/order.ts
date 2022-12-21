@@ -39,7 +39,7 @@ const slice = createSlice({
      * 주문내역 전체 가져오기
      * @param action 주문대기, 주문확인, 배송중, 배송완료, 주문취소 목록
      */
-    getAllOrders(state, action) {
+    getAll(state, action) {
       state.isLoading = false;
 
       state.pendingOrders = action.payload.pendingOrders;
@@ -59,8 +59,8 @@ const slice = createSlice({
      * 주문 확인처리
      * @param action 확인된 주문의 인덱스
      */
-    confirmOrder(state, action) {
-      const index = action.payload;
+    confirm(state, action) {
+      const { index } = action.payload;
       const pending = state.pendingOrders;
 
       // 상태를 주문대기로 변경
@@ -77,7 +77,12 @@ const slice = createSlice({
       state.isLoading = false;
     },
 
-    completeOrder(state, action) {
+    /**
+     * 주문 완료처리
+     * @param state
+     * @param action
+     */
+    complete(state, action) {
       const { index, orderId } = action.payload;
       const confirmed = state.confirmedOrders;
 
@@ -102,6 +107,20 @@ const slice = createSlice({
       // 로딩상태 해제
       state.isLoading = false;
     },
+
+    //
+
+    cancelByPending(state, action) {
+      const { index } = action.payload;
+      const { pendingOrders } = state;
+
+      if (pendingOrders[index].status === OrderStatus.Pending) {
+        pendingOrders[index].status = OrderStatus.Cancelled;
+        state.pendingOrderTotalCount -= 1;
+      }
+    },
+
+    cancelByConfirmed(state, action) {},
   },
 });
 
@@ -113,7 +132,7 @@ export const getOrders = () => async () => {
   try {
     const data = await OrderApi.getOrders();
 
-    dispatch(slice.actions.getAllOrders(data));
+    dispatch(slice.actions.getAll(data));
   } catch (e) {
     dispatch(slice.actions.hasError(e.message));
   }
@@ -123,7 +142,7 @@ export const confirmOrder = (orderId: Order['orderId'], index: number) => async 
   dispatch(slice.actions.startLoading());
 
   try {
-    dispatch(slice.actions.confirmOrder(index));
+    dispatch(slice.actions.confirm({ index }));
   } catch (e) {
     dispatch(slice.actions.hasError(e.message));
   }
@@ -133,7 +152,17 @@ export const completeOrder = (orderId: Order['orderId'], index: number) => async
   dispatch(slice.actions.startLoading());
 
   try {
-    dispatch(slice.actions.completeOrder({ orderId, index }));
+    dispatch(slice.actions.complete({ orderId, index }));
+  } catch (e) {
+    dispatch(slice.actions.hasError(e));
+  }
+};
+
+export const cancelOrderByPending = (orderId: Order['orderId'], index: number) => async () => {
+  dispatch(slice.actions.startLoading());
+
+  try {
+    dispatch(slice.actions.cancelByPending({ index }));
   } catch (e) {
     dispatch(slice.actions.hasError(e));
   }

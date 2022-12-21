@@ -35,7 +35,7 @@ export default function OrderReceiptHeader() {
             variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
             color={
               (status === OrderStatus.Pending && 'primary') ||
-              (status === OrderStatus.Confirmed && 'error') ||
+              (status === OrderStatus.Confirmed && 'warning') ||
               (status === OrderStatus.Delivering && 'warning') ||
               (status === OrderStatus.Completed && 'success') ||
               (status === OrderStatus.Cancelled && 'default') ||

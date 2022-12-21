@@ -2,7 +2,8 @@ import { TableContainer, Table, TableBody, Divider, Button, Stack } from '@mui/m
 import { OrderStatus } from '../../@types/order';
 // hooks
 import useReceipt from '../../hooks/useReceipt';
-import { confirmOrder } from '../../redux/slices/order';
+// redux
+import { cancelOrderByPending, completeOrder, confirmOrder } from '../../redux/slices/order';
 import { useDispatch } from '../../redux/store';
 // components
 import Scrollbar from '../Scrollbar';
@@ -34,7 +35,22 @@ export default function OrderReceiptContent({ pendingMode }: Props) {
     }
   };
 
-  const handleComplete = () => {};
+  const handleComplete = () => {
+    if (receiptData !== null && stateIndex !== null) {
+      dispatch(completeOrder(receiptData.orderId, stateIndex));
+      onCloseReceipt();
+    }
+  };
+
+  const handleCancel = () => {
+    if (receiptData !== null && stateIndex !== null) {
+      if (receiptData.status === OrderStatus.Pending) {
+        dispatch(cancelOrderByPending(receiptData.orderId, stateIndex));
+      }
+    }
+
+    onCloseReceipt();
+  };
 
   // ------------------------------------------------------------------------------------
 
@@ -67,7 +83,7 @@ export default function OrderReceiptContent({ pendingMode }: Props) {
           <Button
             variant="text"
             color="inherit"
-            onClick={onCloseReceipt}
+            onClick={handleCancel}
             disabled={receiptData?.status === OrderStatus.Completed}
           >
             주문 취소
