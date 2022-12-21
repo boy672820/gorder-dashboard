@@ -78,7 +78,7 @@ const slice = createSlice({
     },
 
     completeOrder(state, action) {
-      const index = action.payload;
+      const { index, orderId } = action.payload;
       const confirmed = state.confirmedOrders;
 
       // 상태를 주문대기로 변경
@@ -87,8 +87,16 @@ const slice = createSlice({
       // 주문확인 목록의 총 개수 감소
       state.confirmedOrderTotalCount -= 1;
 
-      // 완료 목록의 맨 앞으로 이동, 총 개수 증가
+      // 주문확인 목록에서 제거, 완료 목록의 맨 앞으로 이동
+      const pendingIndex = state.pendingOrders.findIndex((order) => order.orderId === orderId);
+
+      if (pendingIndex >= 0) {
+        state.pendingOrders.splice(pendingIndex, 1);
+      }
+
       state.completedOrders.unshift(confirmed[index]);
+
+      // 총 개수 증가
       state.completedOrderTotalCount += 1;
 
       // 로딩상태 해제
@@ -125,7 +133,7 @@ export const completeOrder = (orderId: Order['orderId'], index: number) => async
   dispatch(slice.actions.startLoading());
 
   try {
-    dispatch(slice.actions.completeOrder(index));
+    dispatch(slice.actions.completeOrder({ orderId, index }));
   } catch (e) {
     dispatch(slice.actions.hasError(e));
   }
