@@ -73,6 +73,7 @@ export default function OrderProcessingList() {
     confirmedOrders: orders,
     confirmedOrderTotalCount: orderTotalCount,
     isLoading,
+    initialized,
   } = useSelector((state) => state.order);
 
   const [tableData, setTableData] = useState<Order[]>([]);
@@ -80,10 +81,10 @@ export default function OrderProcessingList() {
   // const [filterName, setFilterName] = useState('');
 
   useEffect(() => {
-    if (!orders.length) {
+    if (!initialized) {
       dispatch(getOrders());
     }
-  }, [orders, dispatch]);
+  }, [dispatch, initialized]);
 
   useEffect(() => {
     if (orders.length) {

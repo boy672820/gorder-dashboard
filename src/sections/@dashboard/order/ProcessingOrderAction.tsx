@@ -1,8 +1,10 @@
-import { Grid, Button } from '@mui/material';
 import { useCallback } from 'react';
-import { Order, OrderStatus } from '../../../@types/order';
+import { Grid, Button } from '@mui/material';
 // hooks
 import useReceipt from '../../../hooks/useReceipt';
+// types
+import { Enumerable } from '../../../@types';
+import { Order } from '../../../@types/order';
 
 type Props = {
   row: Order;
@@ -51,10 +53,12 @@ export default function ProcessingOrderAction({ row, index, onComplete }: Props)
           color="warning"
           size="large"
           fullWidth
-          disabled={row.status !== OrderStatus.Confirmed}
+          disabled={row.status !== Enumerable.OrderStatus.Confirmed}
           onClick={handleComplete}
         >
-          {row.status === OrderStatus.Confirmed ? '완료하기' : '조리 완료'}
+          {(row.status === Enumerable.OrderStatus.Confirmed && '완료하기') ||
+            (row.status === Enumerable.OrderStatus.Cancelled && '취소됨') ||
+            '조리 완료'}
         </Button>
       </Grid>
     </Grid>

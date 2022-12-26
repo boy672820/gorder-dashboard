@@ -1,10 +1,15 @@
 import { TableContainer, Table, TableBody, Divider, Button, Stack } from '@mui/material';
-import { OrderStatus } from '../../@types/order';
+import { LoadingButton } from '@mui/lab';
 // hooks
 import useReceipt from '../../hooks/useReceipt';
 // redux
-import { cancelOrderByPending, completeOrder, confirmOrder } from '../../redux/slices/order';
-import { useDispatch } from '../../redux/store';
+import {
+  cancelOrderByConfirmed,
+  cancelOrderByPending,
+  completeOrder,
+  confirmOrder,
+} from '../../redux/slices/order';
+import { useDispatch, useSelector } from '../../redux/store';
 // components
 import Scrollbar from '../Scrollbar';
 import OrderReceiptHeader from './OrderReceiptHeader';
@@ -13,6 +18,8 @@ import {
   OrderReceiptTableProductRow,
   OrderReceiptTableTotalRow,
 } from './table';
+// types
+import { Enumerable } from '../../@types';
 
 // ----------------------------------------------------------------------
 
@@ -28,6 +35,10 @@ export default function OrderReceiptContent({ pendingMode }: Props) {
 
   const dispatch = useDispatch();
 
+  const isLoading = useSelector((state) => state.order.isLoading);
+
+  // -----------------------------------------------------------------------------------------------
+
   const handleConfirm = () => {
     if (receiptData !== null && stateIndex !== null) {
       dispatch(confirmOrder(receiptData.orderId, stateIndex));
@@ -42,17 +53,20 @@ export default function OrderReceiptContent({ pendingMode }: Props) {
     }
   };
 
-  const handleCancel = () => {
+  const handleCancel = async () => {
     if (receiptData !== null && stateIndex !== null) {
-      if (receiptData.status === OrderStatus.Pending) {
-        dispatch(cancelOrderByPending(receiptData.orderId, stateIndex));
-      }
+      await dispatch(
+        (pendingMode ? cancelOrderByPending : cancelOrderByConfirmed)(
+          receiptData.orderId,
+          stateIndex
+        )
+      );
     }
 
-    onCloseReceipt();
+    // onCloseReceipt();
   };
 
-  // ------------------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------------------------
 
   const products = receiptData?.orderHasProducts || [];
 
@@ -79,15 +93,16 @@ export default function OrderReceiptContent({ pendingMode }: Props) {
       <Divider sx={{ mt: 1.5 }} />
 
       <Stack justifyContent="space-between" direction="row" sx={{ mt: 2.5 }}>
-        {receiptData?.status !== OrderStatus.Cancelled && (
-          <Button
+        {receiptData?.status !== Enumerable.OrderStatus.Cancelled && (
+          <LoadingButton
             variant="text"
             color="inherit"
             onClick={handleCancel}
-            disabled={receiptData?.status === OrderStatus.Completed}
+            disabled={receiptData?.status === Enumerable.OrderStatus.Completed}
+            loading={isLoading}
           >
             주문 취소
-          </Button>
+          </LoadingButton>
         )}
 
         <Stack direction="row" gap={1}>
@@ -95,30 +110,30 @@ export default function OrderReceiptContent({ pendingMode }: Props) {
             닫기
           </Button>
 
-          {receiptData?.status !== OrderStatus.Cancelled && (
+          {receiptData?.status !== Enumerable.OrderStatus.Cancelled && (
             <Button
               variant="contained"
-              color={receiptData?.status === OrderStatus.Pending ? 'primary' : 'warning'}
+              color={receiptData?.status === Enumerable.OrderStatus.Pending ? 'primary' : 'warning'}
               onClick={
-                (receiptData?.status === OrderStatus.Pending && handleConfirm) ||
-                (receiptData?.status === OrderStatus.Confirmed && handleComplete) ||
+                (receiptData?.status === Enumerable.OrderStatus.Pending && handleConfirm) ||
+                (receiptData?.status === Enumerable.OrderStatus.Confirmed && handleComplete) ||
                 (() => {})
               }
               disabled={
                 pendingMode
-                  ? receiptData?.status !== OrderStatus.Pending
-                  : receiptData?.status !== OrderStatus.Pending &&
-                    receiptData?.status !== OrderStatus.Confirmed
+                  ? receiptData?.status !== Enumerable.OrderStatus.Pending
+                  : receiptData?.status !== Enumerable.OrderStatus.Pending &&
+                    receiptData?.status !== Enumerable.OrderStatus.Confirmed
               }
             >
               {pendingMode
-                ? receiptData?.status === OrderStatus.Pending
+                ? receiptData?.status === Enumerable.OrderStatus.Pending
                   ? '접수하기'
                   : '조리 중'
-                : (receiptData?.status === OrderStatus.Pending && '접수하기') ||
-                  (receiptData?.status === OrderStatus.Confirmed && '완료하기') ||
-                  (receiptData?.status === OrderStatus.Delivering && '배달 중') ||
-                  (receiptData?.status === OrderStatus.Completed && '조리 완료')}
+                : (receiptData?.status === Enumerable.OrderStatus.Pending && '접수하기') ||
+                  (receiptData?.status === Enumerable.OrderStatus.Confirmed && '완료하기') ||
+                  (receiptData?.status === Enumerable.OrderStatus.Delivering && '배달 중') ||
+                  (receiptData?.status === Enumerable.OrderStatus.Completed && '조리 완료')}
             </Button>
           )}
         </Stack>

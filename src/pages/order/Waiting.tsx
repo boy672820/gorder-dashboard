@@ -73,6 +73,7 @@ export default function OrderWaitingList() {
     pendingOrders: orders,
     pendingOrderTotalCount: orderTotalCount,
     isLoading,
+    initialized,
   } = useSelector((state) => state.order);
 
   const [tableData, setTableData] = useState<Order[]>([]);
@@ -80,10 +81,10 @@ export default function OrderWaitingList() {
   // const [filterName, setFilterName] = useState('');
 
   useEffect(() => {
-    if (!orders.length) {
+    if (!initialized) {
       dispatch(getOrders());
     }
-  }, [orders, dispatch]);
+  }, [dispatch, initialized]);
 
   useEffect(() => {
     if (orders.length) {
@@ -119,7 +120,7 @@ export default function OrderWaitingList() {
   const heading = `주문대기${orderTotalCount ? `(${orderTotalCount})` : ''}`;
 
   return (
-    <ReceiptProvider pendingMode={true}>
+    <ReceiptProvider pendingMode>
       <Page title={heading}>
         <Container maxWidth={themeStretch ? false : 'lg'}>
           <HeaderBreadcrumbs

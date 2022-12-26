@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { Order, OrderState, OrderStatus } from '../../@types/order';
+import { Order, OrderState } from '../../@types/order';
 import { dispatch } from '../store';
 import { OrderApi } from '../../apis/order';
+import { Enumerable } from '../../@types';
 
 const initialState: OrderState = {
   pendingOrders: [],
@@ -16,6 +17,7 @@ const initialState: OrderState = {
   completedOrderTotalCount: 0,
   cancelledOrderTotalCount: 0,
   //
+  initialized: false,
   isLoading: false,
   error: null,
 };
@@ -53,6 +55,8 @@ const slice = createSlice({
       state.deliveringOrderTotalCount = action.payload.deliveringOrders.length;
       state.completedOrderTotalCount = action.payload.completedOrders.length;
       state.cancelledOrderTotalCount = action.payload.cancelledOrders.length;
+
+      state.initialized = true;
     },
 
     /**
@@ -64,7 +68,7 @@ const slice = createSlice({
       const pending = state.pendingOrders;
 
       // 상태를 주문대기로 변경
-      pending[index].status = OrderStatus.Confirmed;
+      pending[index].status = Enumerable.OrderStatus.Confirmed;
 
       // 주문대기 목록의 총 개수 감소
       state.pendingOrderTotalCount -= 1;
@@ -87,7 +91,7 @@ const slice = createSlice({
       const confirmed = state.confirmedOrders;
 
       // 상태를 주문대기로 변경
-      confirmed[index].status = OrderStatus.Completed;
+      confirmed[index].status = Enumerable.OrderStatus.Completed;
 
       // 주문확인 목록의 총 개수 감소
       state.confirmedOrderTotalCount -= 1;
@@ -112,15 +116,35 @@ const slice = createSlice({
 
     cancelByPending(state, action) {
       const { index } = action.payload;
-      const { pendingOrders } = state;
+      const pending = state.pendingOrders;
 
-      if (pendingOrders[index].status === OrderStatus.Pending) {
-        pendingOrders[index].status = OrderStatus.Cancelled;
+      if (pending[index].status === Enumerable.OrderStatus.Pending) {
+        pending[index].status = Enumerable.OrderStatus.Cancelled;
         state.pendingOrderTotalCount -= 1;
       }
+
+      state.isLoading = false;
     },
 
-    cancelByConfirmed(state, action) {},
+    cancelByConfirmed(state, action) {
+      const { index } = action.payload;
+      const confirmed = state.confirmedOrders;
+
+      if (confirmed[index].status === Enumerable.OrderStatus.Confirmed) {
+        confirmed[index].status = Enumerable.OrderStatus.Cancelled;
+        state.confirmedOrderTotalCount -= 1;
+      }
+
+      const pending = state.pendingOrders;
+
+      const pendingIndex = pending.findIndex((order) => order.orderId === confirmed[index].orderId);
+
+      if (pendingIndex >= 0) {
+        pending.splice(pendingIndex, 1);
+      }
+
+      state.isLoading = false;
+    },
   },
 });
 
@@ -142,6 +166,8 @@ export const confirmOrder = (orderId: Order['orderId'], index: number) => async 
   dispatch(slice.actions.startLoading());
 
   try {
+    await OrderApi.updateStatus(orderId, Enumerable.OrderStatus.Confirmed);
+
     dispatch(slice.actions.confirm({ index }));
   } catch (e) {
     dispatch(slice.actions.hasError(e.message));
@@ -152,6 +178,8 @@ export const completeOrder = (orderId: Order['orderId'], index: number) => async
   dispatch(slice.actions.startLoading());
 
   try {
+    await OrderApi.updateStatus(orderId, Enumerable.OrderStatus.Completed);
+
     dispatch(slice.actions.complete({ orderId, index }));
   } catch (e) {
     dispatch(slice.actions.hasError(e));
@@ -162,7 +190,22 @@ export const cancelOrderByPending = (orderId: Order['orderId'], index: number) =
   dispatch(slice.actions.startLoading());
 
   try {
+    await OrderApi.updateStatus(orderId, Enumerable.OrderStatus.Cancelled);
+
     dispatch(slice.actions.cancelByPending({ index }));
+  } catch (e) {
+    dispatch(slice.actions.hasError(e));
+  }
+};
+
+export const cancelOrderByConfirmed = (orderId: Order['orderId'], index: number) => async () => {
+  dispatch(slice.actions.startLoading());
+
+  try {
+    // await OrderApi.updateStatus(orderId, Enumerable.OrderStatus.Cancelled);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    dispatch(slice.actions.cancelByConfirmed({ index }));
   } catch (e) {
     dispatch(slice.actions.hasError(e));
   }

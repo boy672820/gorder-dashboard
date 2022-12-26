@@ -1,22 +1,11 @@
-export enum OrderType {
-  Pickup = 'Pickup',
-  Order = 'Order',
-}
+import { Enumerable } from './enum';
 
-export enum OrderStatus {
-  Pending = 'Pending', // 주문대기
-  Confirmed = 'Confirmed', // 주문확인
-  Delivering = 'Delivering', // 배송중
-  Completed = 'Completed', // 주문완료
-  Cancelled = 'Cancelled', // 주문취소
-}
-
-export const OrderStatusLabel: { [keyof in OrderStatus]: string } = {
-  [OrderStatus.Pending]: '대기 중',
-  [OrderStatus.Confirmed]: '조리 중',
-  [OrderStatus.Delivering]: '배달 중',
-  [OrderStatus.Completed]: '조리 완료',
-  [OrderStatus.Cancelled]: '주문 취소',
+export const OrderStatusLabel: { [keyof in Enumerable.OrderStatus]: string } = {
+  [Enumerable.OrderStatus.Pending]: '대기 중',
+  [Enumerable.OrderStatus.Confirmed]: '조리 중',
+  [Enumerable.OrderStatus.Delivering]: '배달 중',
+  [Enumerable.OrderStatus.Completed]: '조리 완료',
+  [Enumerable.OrderStatus.Cancelled]: '주문 취소',
 } as const;
 
 export type OrderProduct = {
@@ -34,8 +23,8 @@ export type Order = {
   basePrice: number;
   discountPrice: number;
   totalPrice: number;
-  type: OrderType;
-  status: OrderStatus;
+  type: Enumerable.OrderType;
+  status: Enumerable.OrderStatus;
   createdAt: string;
   user: {
     email: string;
@@ -59,6 +48,7 @@ export type OrderState = {
   completedOrderTotalCount: number;
   cancelledOrderTotalCount: number;
   //
+  initialized: boolean;
   isLoading: boolean;
   error: string | null;
 } & OrderList;

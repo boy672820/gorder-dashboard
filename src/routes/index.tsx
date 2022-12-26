@@ -52,4 +52,6 @@ export default function Router() {
 const Waiting = Loadable(lazy(() => import('../pages/order/Waiting')));
 const Processing = Loadable(lazy(() => import('../pages/order/Processing')));
 const Completed = Loadable(lazy(() => import('../pages/order/Completed')));
+
+// Page
 const NotFound = Loadable(lazy(() => import('../pages/Page404')));

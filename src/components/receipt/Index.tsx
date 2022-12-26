@@ -2,7 +2,6 @@ import { DialogContent } from '@mui/material';
 import useReceipt from '../../hooks/useReceipt';
 // components
 import { DialogAnimate } from '../animate';
-// components
 import OrderReceiptContent from './OrderReceipt';
 
 type Props = {

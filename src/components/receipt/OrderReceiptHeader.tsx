@@ -7,7 +7,8 @@ import { formatDate, formatTime } from '../../utils/formatTime';
 import Image from '../Image';
 import Label from '../Label';
 // types
-import { OrderStatus, OrderStatusLabel } from '../../@types/order';
+import { OrderStatusLabel } from '../../@types/order';
+import { Enumerable } from '../../@types';
 
 export default function OrderReceiptHeader() {
   const theme = useTheme();
@@ -34,11 +35,11 @@ export default function OrderReceiptHeader() {
           <Label
             variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
             color={
-              (status === OrderStatus.Pending && 'primary') ||
-              (status === OrderStatus.Confirmed && 'warning') ||
-              (status === OrderStatus.Delivering && 'warning') ||
-              (status === OrderStatus.Completed && 'success') ||
-              (status === OrderStatus.Cancelled && 'default') ||
+              (status === Enumerable.OrderStatus.Pending && 'primary') ||
+              (status === Enumerable.OrderStatus.Confirmed && 'warning') ||
+              (status === Enumerable.OrderStatus.Delivering && 'warning') ||
+              (status === Enumerable.OrderStatus.Completed && 'success') ||
+              (status === Enumerable.OrderStatus.Cancelled && 'default') ||
               'default'
             }
           >
