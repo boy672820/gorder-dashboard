@@ -1,5 +1,4 @@
 import { TableContainer, Table, TableBody, Divider, Button, Stack } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
 // hooks
 import useReceipt from '../../hooks/useReceipt';
 // redux
@@ -9,7 +8,7 @@ import {
   completeOrder,
   confirmOrder,
 } from '../../redux/slices/order';
-import { useDispatch, useSelector } from '../../redux/store';
+import { useDispatch } from '../../redux/store';
 // components
 import Scrollbar from '../Scrollbar';
 import OrderReceiptHeader from './OrderReceiptHeader';
@@ -35,8 +34,6 @@ export default function OrderReceiptContent({ pendingMode }: Props) {
 
   const dispatch = useDispatch();
 
-  const isLoading = useSelector((state) => state.order.isLoading);
-
   // -----------------------------------------------------------------------------------------------
 
   const handleConfirm = () => {
@@ -55,15 +52,15 @@ export default function OrderReceiptContent({ pendingMode }: Props) {
 
   const handleCancel = async () => {
     if (receiptData !== null && stateIndex !== null) {
-      await dispatch(
+      onCloseReceipt();
+
+      dispatch(
         (pendingMode ? cancelOrderByPending : cancelOrderByConfirmed)(
           receiptData.orderId,
           stateIndex
         )
       );
     }
-
-    // onCloseReceipt();
   };
 
   // -----------------------------------------------------------------------------------------------
@@ -94,15 +91,14 @@ export default function OrderReceiptContent({ pendingMode }: Props) {
 
       <Stack justifyContent="space-between" direction="row" sx={{ mt: 2.5 }}>
         {receiptData?.status !== Enumerable.OrderStatus.Cancelled && (
-          <LoadingButton
+          <Button
             variant="text"
             color="inherit"
             onClick={handleCancel}
             disabled={receiptData?.status === Enumerable.OrderStatus.Completed}
-            loading={isLoading}
           >
             주문 취소
-          </LoadingButton>
+          </Button>
         )}
 
         <Stack direction="row" gap={1}>

@@ -186,6 +186,12 @@ export const completeOrder = (orderId: Order['orderId'], index: number) => async
   }
 };
 
+/**
+ * 주문 취소(주문대기 상태)
+ * @param orderId
+ * @param index
+ * @returns
+ */
 export const cancelOrderByPending = (orderId: Order['orderId'], index: number) => async () => {
   dispatch(slice.actions.startLoading());
 
@@ -198,12 +204,17 @@ export const cancelOrderByPending = (orderId: Order['orderId'], index: number) =
   }
 };
 
+/**
+ * 주문 취소(주문확인 상태)
+ * @param orderId
+ * @param index
+ * @returns
+ */
 export const cancelOrderByConfirmed = (orderId: Order['orderId'], index: number) => async () => {
   dispatch(slice.actions.startLoading());
 
   try {
-    // await OrderApi.updateStatus(orderId, Enumerable.OrderStatus.Cancelled);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await OrderApi.updateStatus(orderId, Enumerable.OrderStatus.Cancelled);
 
     dispatch(slice.actions.cancelByConfirmed({ index }));
   } catch (e) {
