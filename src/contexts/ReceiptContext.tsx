@@ -39,6 +39,8 @@ function ReceiptProvider({ children, pendingMode }: ReceiptProviderProps) {
   const [receiptData, setReceiptData] = useState<Order | null>(null);
   const [stateIndex, setStateIndex] = useState<number | null>(null);
 
+  console.log(openReceipt);
+
   // ----------------------------------------------------------------------
 
   /**
@@ -48,6 +50,7 @@ function ReceiptProvider({ children, pendingMode }: ReceiptProviderProps) {
     setOpenReceipt(false);
     setReceiptData(null);
     setStateIndex(null);
+    console.log('Close Receipt Dialog');
   }, []);
 
   /**
@@ -59,6 +62,7 @@ function ReceiptProvider({ children, pendingMode }: ReceiptProviderProps) {
     setReceiptData(data);
     setStateIndex(index);
     setOpenReceipt(true);
+    console.log('Open Receipt Dialog');
   }, []);
 
   // ----------------------------------------------------------------------

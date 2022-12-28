@@ -8,7 +8,7 @@ import {
   completeOrder,
   confirmOrder,
 } from '../../redux/slices/order';
-import { useDispatch } from '../../redux/store';
+import { useDispatch, useSelector } from '../../redux/store';
 // components
 import Scrollbar from '../Scrollbar';
 import OrderReceiptHeader from './OrderReceiptHeader';
@@ -19,6 +19,7 @@ import {
 } from './table';
 // types
 import { Enumerable } from '../../@types';
+import { LoadingButton } from '@mui/lab';
 
 // ----------------------------------------------------------------------
 
@@ -31,6 +32,8 @@ type Props = {
 export default function OrderReceiptContent({ pendingMode }: Props) {
   // hooks
   const { stateIndex, receiptData, onCloseReceipt } = useReceipt();
+
+  const isLoading = useSelector((state) => state.order.isLoading);
 
   const dispatch = useDispatch();
 
@@ -52,15 +55,15 @@ export default function OrderReceiptContent({ pendingMode }: Props) {
 
   const handleCancel = async () => {
     if (receiptData !== null && stateIndex !== null) {
-      onCloseReceipt();
-
-      dispatch(
+      await dispatch(
         (pendingMode ? cancelOrderByPending : cancelOrderByConfirmed)(
           receiptData.orderId,
           stateIndex
         )
       );
     }
+
+    onCloseReceipt();
   };
 
   // -----------------------------------------------------------------------------------------------
@@ -91,14 +94,15 @@ export default function OrderReceiptContent({ pendingMode }: Props) {
 
       <Stack justifyContent="space-between" direction="row" sx={{ mt: 2.5 }}>
         {receiptData?.status !== Enumerable.OrderStatus.Cancelled && (
-          <Button
+          <LoadingButton
             variant="text"
             color="inherit"
             onClick={handleCancel}
             disabled={receiptData?.status === Enumerable.OrderStatus.Completed}
+            loading={isLoading}
           >
             주문 취소
-          </Button>
+          </LoadingButton>
         )}
 
         <Stack direction="row" gap={1}>
